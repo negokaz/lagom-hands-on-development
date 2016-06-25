@@ -1,0 +1,42 @@
+.list-style-svg (@url, @size) {
+
+    * {
+      list-style: none;
+
+      &:before {
+        content: '';
+        display: inline-block;
+        background-size: @size;
+        width: @size;
+        height: @size;
+        background-repeat: no-repeat;
+        background-image: url(@url);
+        margin: 0 0.5em;
+        position: relative;
+        top: @size / 4;
+      }
+    }
+}
+
+.size (@size) {
+    height: @size;
+    width:  @size;
+}
+
+.float-top(@postiion) {
+  position: absolute;
+  top: @postiion;
+
+  > * {
+    padding: 0.25em 1em;
+  }
+}
+
+.float-bottom(@position) {
+  position: absolute;
+  bottom: @position;
+
+  > * {
+    padding: 0.25em 1em;
+  }
+}

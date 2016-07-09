@@ -53,27 +53,66 @@ public class FavoriteEventProcessor extends CassandraReadSideProcessor<FavoriteE
     }
 
     private CompletionStage<Done> prepareCreateTables(CassandraSession session) {
-        return CompletableFuture.completedFuture(Done.getInstance());
+        return session.executeCreateTable(
+            "CREATE TABLE IF NOT EXISTS favor ("
+                + "favoriteId text, favoredBy text, timestamp bigint, "
+                + "PRIMARY KEY (favoriteId, favoredBy))").thenCompose(a ->
+            session.executeCreateTable(
+                "CREATE TABLE IF NOT EXISTS favor_offset ("
+                    + "partition int, offset timeuuid, "
+                    + "PRIMARY KEY (partition))"));
     }
 
     private CompletionStage<Done> prepareWriteFavors(CassandraSession session) {
-        return CompletableFuture.completedFuture(Done.getInstance());
+        return session.prepare("INSERT INTO favor (favoriteId, favoredBy, timestamp) VALUES (?, ?, ?)").thenApply(ps -> {
+            setWriteFavors(ps);
+            return Done.getInstance();
+        });
     }
 
     private CompletionStage<Done> prepareDeleteFavors(CassandraSession session) {
-        return CompletableFuture.completedFuture(Done.getInstance());
+        return session.prepare("DELETE FROM favor WHERE favoriteId = ? AND favoredBy = ?").thenApply(ps -> {
+            setDeleteFavors(ps);
+            return Done.getInstance();
+        });
     }
 
     private CompletionStage<Done> prepareWriteOffset(CassandraSession session) {
-        return CompletableFuture.completedFuture(Done.getInstance());
+        return session.prepare("INSERT INTO favor_offset (partition, offset) VALUES (1, ?)").thenApply(ps -> {
+            setWriteOffset(ps);
+            return Done.getInstance();
+        });
     }
 
     private CompletionStage<Optional<UUID>> selectOffset(CassandraSession session) {
-        return CompletableFuture.completedFuture(Optional.empty());
+        return session
+                .selectOne("SELECT offset FROM favor_offset")
+                .thenApply(optionalRow -> optionalRow.map(r -> r.getUUID("offset")));
     }
 
     @Override
     public EventHandlers defineEventHandlers(EventHandlersBuilder builder) {
+
+        builder.setEventHandler(FavoriteAdded.class,
+            (event, offset) -> {
+                BoundStatement bindWriteFavors = writeFavors.bind()
+                        .setString("favoriteId", event.getFavoriteId())
+                        .setString("favoredBy", event.getUserId())
+                        .setLong("timestamp", event.getTimestamp().toEpochMilli());
+                BoundStatement bindWriteOffset = writeOffset.bind(offset);
+                return completedStatements(Arrays.asList(bindWriteFavors, bindWriteOffset));
+            }
+        );
+
+        builder.setEventHandler(FavoriteDeleted.class,
+            (event, offset) -> {
+                BoundStatement bindDeleteFavors = deleteFavors.bind()
+                        .setString("favoriteId", event.getFavoriteId())
+                        .setString("favoredBy", event.getUserId());
+                BoundStatement bindWriteOffset = writeOffset.bind(offset);
+                return completedStatements(Arrays.asList(bindDeleteFavors, bindWriteOffset));
+            }
+        );
 
         return builder.build();
     }

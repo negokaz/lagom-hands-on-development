@@ -103,23 +103,25 @@ public class ChirpServiceImpl implements ChirpService {
           return Source.from(recentChirps).concat(publishedChirps);
         });
 
+      // お気に入りの一覧
       CompletionStage<POrderedSet<String>> favorites = favoriteService.getFavorites(userId).invoke();
 
-      return recentChirpSource.thenApply(source -> {
+      return recentChirpSource.thenApply(source -> { // source: つぶやきのストリーム
 
         return source.mapAsync(2, chirp -> {
-
+          // TODO: STEP2 - お気に入りされた数を取得
           CompletionStage<Integer> favorCount =
-                  favoriteService.getFavorCount(chirp.getUuid()).invoke();
+                  CompletableFuture.completedFuture(0);
 
           CompletionStage<Chirp> chirpAppliedFavorite =
             favorites.thenCompose(favs ->
             favorCount.thenApply(count ->
+              // お気に入りされている場合は isFavorite を true にする
+              // お気に入りされた数を favorCount に設定
               favs.contains(chirp.getUuid())
                       ? chirp.withIsFavorite(true).withFavorCount(count)
                       : chirp.withFavorCount(count)
             ));
-
           return chirpAppliedFavorite;
         });
       });

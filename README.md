@@ -45,12 +45,15 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
     ```bash
     $ cd lagom-hands-on-development
     $ bin/activator runAll
+    ....
+    [info] (Services started, use Ctrl+D to stop and go back to the console...)
+    # ↑起動完了のログ
     ```
 
     [http://localhost:9000](http://localhost:9000) に移動し、下記のような画面が表示されると起動成功です。
     ![](doc/img/welcome-chiper.png)
 
-    確認できたらターミナル上で`Ctrl + C`を押して終了します。
+    確認できたらターミナル上で`Ctrl + D`を押して終了します。
 
 ## ハンズオンを始める
 

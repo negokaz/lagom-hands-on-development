@@ -36,49 +36,129 @@ background-image: url("resources/img/title-background.png")
 
 ---
 
-## マイクロサービスってなに？
+## マイクロサービスアーキテクチャってなに？
 
-## マイクロサービスの利点、目指すこと
+* 2014年3月に ThoughtWorks の Martin Fowler によって提唱された
+* 小さいサービスを組み合わせて一つのアプリケーションを構築するスタイルのこと
+* サービスどうしを疎結合にすることにより様々な利点が得られる
 
-## マイクロサービスで犠牲になること
+???
 
-## マイクロサービスに関わるプラクティスは色々ある
+In short, the microservice architectural style is an approach to developing
+a single application as a suite of small services, each running in its own process
+and communicating with lightweight mechanisms, often an HTTP resource API.
+These services are built around business capabilities and
+independently deployable by fully automated deployment machinery.
+There is a bare minimum of centralized management of these services,
+which may be written in different programming languages and use different data storage technologies.
+http://martinfowler.com/articles/microservices.html
 
-## その中でも今日やることはこのへん
-(技術的な部分)
+---
 
-## 今日やりたいこと
+## マイクロサービスアーキテクチャの主な利点
 
-* マイクロサービス向けのフレームワークから、技術的なプラクティスを学び取る
-* 今日使うのは Lagom
+* サービスごとに異なる技術を使うことができる
+  * サービスの特性に合った技術を採用することができる
+* レジリエンス(回復性)が得られる
+  * サービスの一部に障害が起きても全体としては稼働し続ける
+  * すぐ障害の原因を取り除けばユーザーからは何事も無かったかのように見える
+* サービスごとにスケーリングできる
+  * 細かい粒度でスケーリングできるためコスト効率がよくなる
+* デプロイの影響範囲を小さくすることができる
+  * 新機能や修正を迅速にリリースすることができるようになる
 
-## Lagomとは？
+---
+
+## マイクロサービスアーキテクチャのトピックス
+
+* アプリケーション設計
+* インフラストラクチャ
+* (人の)組織
+* システム運用
+* セキュリティ
+
+---
+
+## 今日やること・やらないこと
+
+* アプリケーション設計
+* ~~インフラストラクチャ~~
+* ~~(人の)組織~~
+* ~~システム運用~~
+* ~~セキュリティ~~
+
+---
+
+## 今日やること
+
+* マイクロサービス向けのフレームワーク Lagom から、アプリケーション設計に関わるプラクティスを学び取る
+
+---
+
+## Lagom とは？
 
 * 米Lightbend社が3月にリリースしたマイクロサービス向けフレームワーク
+* **Reactive** Microservices Architecture をコアコンセプトとしている
 * [公式サイト](https://www.lightbend.com/lagom)
 
 ???
 https://www.lightbend.com/company/news/lagom-a-new-microservices-framework
+http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 
-## Lagomのアーキテクチャ
+---
+
+## Lagom の特徴的な設計思想
+
+* サービス内部で使うAPIは全て非同期API
+* 分散型の永続化機構
+  * CQRS
+  * イベントソーシング
+
+---
+
+# ハンズオン
+
+* 外部サービスとのコミュニケーション
+
+---
 
 ## Serialization
 
+---
+
 ### Hands-on 1 - HTTPで問い合わせてみる
+
+---
 
 ## CQRS + ES
 
+---
+
 ### Hands-on 2 - Write-Side の実装
+
+---
 
 ### Hands-on 3 - Read-Side の実装
 
+---
+
 ## CircuitBreaker
+
+---
 
 ### Hands-on 4 - CircitBreakerの実装
 
-(確認どうしよ？負荷テスト作る？)
+---
 
 ## まとめ
+
+* マイクロサービスで犠牲になること
+
+---
+
+## 参考資料
+
+* [マイクロサービスアーキテクチャ]()
 
 </textarea>
   <script src="resources/remark-0.13.0.min.js"></script>

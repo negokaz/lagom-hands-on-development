@@ -1,5 +1,7 @@
 # Lagom Hands-On-Development
 
+Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activator-lagom-java-chirper)(Twitterライクなアプリケーション) に「お気に入り」機能を追加実装するハンズオンです。
+
 ## このハンズオンで必要なもの
 
 * インターネット環境

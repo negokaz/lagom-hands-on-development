@@ -152,3 +152,9 @@ licenses in ThisBuild := Seq("Apache-2.0" -> url("http://www.apache.org/licenses
 bintrayVcsUrl in Bundle in ThisBuild := Some("https://github.com/lagom/activator-lagom-java-chirper")
 bintrayOrganization in Bundle in ThisBuild := Some("typesafe")
 bintrayReleaseOnPublish in Bundle in ThisBuild := true
+
+fork in run := true
+
+runAll in Compile := {
+    runAll.toTask.value
+}

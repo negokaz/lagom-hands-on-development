@@ -24,3 +24,9 @@ project/plugins/project/
 # OSX
 
 .DS_Store
+
+# activator ui
+RUNNING_PID
+.sbtserver/
+project/.sbtserver
+project/.sbtserver.lock

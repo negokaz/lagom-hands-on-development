@@ -36,7 +36,7 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
     $ cd lagom-hands-on-development
     $ bin/activator ui
     ```
-    自動的に [http://localhost:8888](http://localhost:8888) が開き、コードが閲覧できるようになります。(例:  [FavoriteService.java](http://127.0.0.1:8888/app/friend-api/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java))
+    自動的に [http://localhost:8888](http://localhost:8888) が開き、コードが閲覧できるようになります。(例:  [FavoriteService.java](http://127.0.0.1:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java))
 
     確認できたらターミナル上で`Ctrl + C`を押して終了します。
 
@@ -64,4 +64,4 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
     $ bin/activator ui
     ```
 
-* [チュートリアル](http://127.0.0.1:8888/app/friend-api/#tutorial/0) を確認し、スタッフの指示を待って下さい。
+* [チュートリアル](http://127.0.0.1:8888/app/lagom-hands-on-development/#tutorial/0) を確認し、スタッフの指示を待って下さい。

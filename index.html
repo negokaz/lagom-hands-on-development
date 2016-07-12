@@ -14,12 +14,9 @@
 
 ## 準備
 
-* エディタ
-  * Atom
-  * Sublime Text
-* コンソール
-* git
-* ソースコード
+* ブラウザでスタートページにアクセス
+    * [bit.ly/start-lagom-hands-on](http://bit.ly/start-lagom-hands-on)
+    * 「ハンズオンを始める」に従って準備してください
 
 ---
 class: center, middle
@@ -138,13 +135,29 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 
 ## Serialization
 
+* Lagom では同期呼び出しと非同期呼び出しがサポートされている
+* 同期呼び出し - HTTP
+* 非同期呼び出し - WebSocket
+
 ---
 
-### Hands-on 1 - HTTPで問い合わせてみる
+## Hands-on 1 - Lagom のAPIを叩いてみる
+
+### HTTP
+
+### HTTPS
 
 ---
 
-## CQRS + ES
+## イベントソーシングとCQRS
+
+---
+
+## イベントソーシング
+
+---
+
+## CQRS
 
 ---
 
@@ -156,7 +169,8 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 
 ---
 
-## CircuitBreaker
+## CircuitBreaker とは？
+
 
 ---
 
@@ -166,7 +180,10 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 
 ## まとめ
 
-* マイクロサービスで犠牲になること
+* マイクロサービスアーキテクチャで犠牲になること
+  * 結果整合性
+    * サービスをまたがるトランザクションを作らない
+    * サービスをまたがる場合は Saga を検討する
 
 ---
 

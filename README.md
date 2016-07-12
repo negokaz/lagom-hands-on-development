@@ -7,7 +7,8 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
 ## このハンズオンで必要なもの
 
 * インターネット環境
-* ブラウザ ([Google Chrome](https://www.google.co.jp/chrome/browser/desktop/) 推奨)
+* [Google Chrome](https://www.google.co.jp/chrome/browser/desktop/)
+* [Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) (Chrome アプリ)
 * ターミナル (CUI)
 * [git](https://git-scm.com/)
 * [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)

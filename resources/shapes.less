@@ -99,6 +99,22 @@
   .list-style-svg('img/github.svg', 1.5em);
 }
 
+.with-cursor {
+  position: relative;
+  display: inline-block;
+}
+
+.with-cursor:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-image: url(img/cursor.png);
+  background-size: 2em;
+  width: 2em;
+  height: 2em;
+}
+
 .size-100 * {
   .size(100%);
 }

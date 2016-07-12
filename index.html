@@ -110,7 +110,7 @@ http://martinfowler.com/articles/microservices.html
 
 * 米Lightbend社が3月にリリースしたマイクロサービス向けフレームワーク
 * **Reactive** Microservices Architecture をコアコンセプトとしている
-* [公式サイト](https://www.lightbend.com/lagom)
+* [https://www.lightbend.com/lagom](https://www.lightbend.com/lagom)
 
 ???
 https://www.lightbend.com/company/news/lagom-a-new-microservices-framework
@@ -129,6 +129,10 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 
 # ハンズオン
 
+TODO:
+* アプリの概要説明・構成
+* プロジェクト構造
+
 * 外部サービスとのコミュニケーション
 
 ---
@@ -138,10 +142,17 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 * Lagom では同期呼び出しと非同期呼び出しがサポートされている
 * 同期呼び出し - HTTP
 * 非同期呼び出し - WebSocket
+* フォーマットはJSONがデフォルトでサポートされている
 
 ---
 
 ## Hands-on 1 - Lagom のAPIを叩いてみる
+
+[Advanced REST Client を起動](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/)
+
+.with-cursor[
+![](resources/img/chrome-app-launch.png)
+]
 
 ### HTTP
 
@@ -155,26 +166,71 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 
 ## イベントソーシング
 
+* システムの中で起きた**イベント**を永続化する
+* イベントは不変(immutable)
+    * キャッシュ、コピー、共有が容易にできる
+    * ⇒ スケールしやすくなる
+* デメリットは、データを集計するような場合大変
+* ⇒ CQRSで回避できる
+
 ---
 
 ## CQRS
 
+* **C**ommand and **Q**uery **R**esponsibility **S**egregation <br />
+
+    コマンドクエリ責務分離
+
+* コマンド(書き込み)とクエリ(読み込み)を分離する
+* 書き込み側と読み込み側で
+    * 異なるDB、データ構造を採用することができるようになる
+    * 別々にスケールできるようになる
+* 書き込み側にイベントソーシングを使い、読み込み側にクエリしやすい形で保存できる
+* デメリットは、読み込み側と書き込み側で完全な一貫性を保てなること
+
 ---
 
-### Hands-on 2 - Write-Side の実装
+## 最終的に目指す形
 
 ---
 
-### Hands-on 3 - Read-Side の実装
+## Hands-on 2 - Write-Side の実装
+
+1. FavoriteEntity を実装する
+2. FavoriteServiceImpl から FavoriteEntity にコマンドを送る
+
+## 確認
+
+* お気に入りが永続化できている
+
+---
+
+## Hands-on 3 - Read-Side の実装
+
+1. FavoriteEventProcessor を実装する
+2. FavoriteServiceImpl からクエリする
+
+## 確認
+
+* お気に入りのカウントが見えるようになる
+* ただし、若干のタイムラグがある
 
 ---
 
 ## CircuitBreaker とは？
 
+* open-close-halfopen
+* 障害を波及させない
+* リクエスト爆発を起こさない
 
 ---
 
-### Hands-on 4 - CircitBreakerの実装
+### Hands-on 4 - CircitBreaker の実装
+
+1. FavoriteService に CircitBreaker を定義する
+
+※ CircitBreaker は呼び出し側の制御。
+Lagom外からHTTPなどでリクエストを投げる場合は注意
 
 ---
 
@@ -190,6 +246,10 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 ## 参考資料
 
 * [マイクロサービスアーキテクチャ]()
+
+???
+
+TODO: なぜ全部非同期なのか？
 
 </textarea>
   <script src="resources/remark-0.13.0.min.js"></script>

@@ -197,3 +197,19 @@ hr {
 .dark hr {
   border-color: rgba(255, 255, 255, 0.12);
 }
+
+.with-cursor {
+  position: relative;
+  display: inline-block;
+}
+
+.with-cursor:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-image: url(img/cursor.png);
+  background-size: 2em;
+  width: 2em;
+  height: 2em;
+}

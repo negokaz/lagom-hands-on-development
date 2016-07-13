@@ -52,7 +52,7 @@ rem Detect if we were double clicked, although theoretically A user could
 rem manually run cmd /c
 for %%x in (%cmdcmdline%) do if %%~x==/c set DOUBLECLICKED=1
 
-set SBT_HOME=%BIN_DIRECTORY
+set SBT_HOME=%BIN_DIRECTORY%
 
 rem Detect if we were double clicked, although theoretically A user could
 rem manually run cmd /c
@@ -229,6 +229,9 @@ rem We also attempt a solid effort at making it URI friendly.
 rem We don't even bother with UNC paths.
 set JAVA_FRIENDLY_HOME_1=/!ACTIVATOR_HOME:\=/!
 set JAVA_FRIENDLY_HOME=/!JAVA_FRIENDLY_HOME_1: =%%20!
+
+rem To start lagom-hands-on-development 
+set SBT_OPTS= -Xms512M -Xmx4096M -Xss2M -XX:MaxMetaspaceSize=1024M
 
 rem Checks if the command contains spaces to know if it should be wrapped in quotes or not
 set NON_SPACED_CMD=%_JAVACMD: =%

@@ -8,8 +8,8 @@
 </head>
 <body>
 <div class="remote-controller">
-  <label for="enable-sync" class="subscribe-control">スライドを同期:</label>
   <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
+  <label for="enable-sync" class="subscribe-control">スライドを同期</label>
 </div>
 <textarea id="source">
 
@@ -360,9 +360,16 @@ TODO: なぜ全部非同期なのか？
 
 </textarea>
   <style>
+    .remote-controller {
+      position: fixed;
+      top: 0;
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.70);
+    }
     .remote-controller label {
       font-size: 0.6rem;
-      color: rgba(0, 0, 0, 0.60);
+      color: rgba(0, 0, 0, 0.50);
+      padding-right: 0.5rem;
     }
     .remote-controller input[type="checkbox"] {
       width:  0.5rem;

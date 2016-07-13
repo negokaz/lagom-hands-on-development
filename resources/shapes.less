@@ -11,26 +11,26 @@
 
 .small {
   /* for inline */
-  font-size: 0.8em;
+  font-size: 0.8rem;
 
   * {
     /* for inline */
-    font-size: 0.8em;
+    font-size: 0.8rem;
   }
 
   img {
-    max-width: 5em;
-    max-hegiht: 5em;
+    max-width: 5rem;
+    max-hegiht: 5rem;
   }
 }
 
 .big {
   /* for inline */
-  font-size: 2em;
+  font-size: 2rem;
 
   * {
     /* for inline */
-    font-size: 2em;
+    font-size: 2rem;
   }
 
   img {
@@ -41,15 +41,15 @@
 
 
 .middle > .glass {
-  padding: 1px 0.25em;
+  padding: 1px 0.25rem;
 }
 
 .footnote {
   width: 85%;
   position: absolute;
-  bottom: 4em;
+  bottom: 4rem;
   text-align: right;
-  font-size: 0.6em;
+  font-size: 0.6rem;
 }
 
 .fit {
@@ -92,58 +92,77 @@
 }
 
 .twitter-icon {
-  .list-style-svg('img/twitter.svg', 1.5em);
+  .list-style-svg('img/twitter.svg', 1.5rem);
 }
 
 .github-icon {
-  .list-style-svg('img/github.svg', 1.5em);
+  .list-style-svg('img/github.svg', 1.5rem);
 }
 
 .with-cursor {
-  position: relative;
-  display: inline-block;
+  .center-overlay(1.5rem, 1.5rem, url('img/cursor.png'));
 }
 
-.with-cursor:after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background-image: url(img/cursor.png);
-  background-size: 2em;
-  width: 2em;
-  height: 2em;
+.width-1 {
+  .width(1rem);
+}
+.width-2 {
+  .width(2rem);
+}
+.width-3 {
+  .width(3rem);
+}
+.width-4 {
+  .width(4rem);
+}
+.width-5 {
+  .width(5rem);
+}
+.width-6 {
+  .width(6rem);
+}
+.width-7 {
+  .width(7rem);
+}
+.width-8 {
+  .width(8rem);
+}
+.width-9 {
+  .width(9rem);
+}
+.width-10 {
+  .width(10rem);
 }
 
-.size-100 * {
-  .size(100%);
+.height-1 {
+  .height(1rem);
 }
-.size-90 * {
-  .size(90%);
+.height-2 {
+  .height(2rem);
 }
-.size-80 * {
-  .size(80%);
+.height-3 {
+  .height(3rem);
 }
-.size-70 * {
-  .size(70%);
+.height-4 {
+  .height(4rem);
 }
-.size-60 * {
-  .size(60%);
+.height-5 {
+  .height(5rem);
 }
-.size-50 * {
-  .size(50%);
+.height-6 {
+  .height(6rem);
 }
-.size-40 * {
-  .size(40%);
+.height-7 {
+  .height(7rem);
 }
-.size-30 * {
-  .size(30%);
+.height-8 {
+  .height(8rem);
 }
-.size-20 * {
-  .size(20%);
+.height-9 {
+  .height(9rem);
 }
-.size-10 * {
-  .size(10%);
+.height-10 {
+  .height(10rem);
 }
 
 .float-top-90 {

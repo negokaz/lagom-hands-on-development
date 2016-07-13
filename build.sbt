@@ -151,8 +151,7 @@ fork in run := true
 /**
  * Activator UI で円滑にハンズオンするための設定
  * rootプロジェクトで Activator UI に検知されるアプリ名(URLの一部になる)が一意になるようにする
- * dummyForActivatorUI で(Mainクラスが見つからなくて？)延々とビルドプロセスが走るのを防止する
+ * rootプロジェクトにダミーのMainを置いて(Mainクラスが見つからなくて？)延々とビルドプロセスが走るのを防止する
  */
 lazy val root = Project("lagom-hands-on-development", base = file("."))
-lazy val dummyForActivatorUI = project("tutorial")
   .settings(javacOptions in compile ++= Seq("-encoding", "UTF-8", "-source", "1.8", "-target", "1.8"))

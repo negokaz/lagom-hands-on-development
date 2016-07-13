@@ -469,7 +469,7 @@ body:fullscreen {
 .footnote {
   width: 85%;
   position: absolute;
-  bottom: 4rem;
+  bottom: 3rem;
   text-align: right;
   font-size: 0.6rem;
 }
@@ -496,10 +496,10 @@ body:fullscreen {
   width: 49%;
   float: right;
 }
-.twitter-icon * {
+.twitter-icon {
   list-style: none;
 }
-.twitter-icon *:before {
+.twitter-icon:before {
   content: '';
   display: inline-block;
   background-size: 1.5rem;
@@ -509,12 +509,12 @@ body:fullscreen {
   background-image: url('img/twitter.svg');
   margin: 0 0.5rem;
   position: relative;
-  top: 0.375rem;
+  bottom: -0.1em;
 }
-.github-icon * {
+.github-icon {
   list-style: none;
 }
-.github-icon *:before {
+.github-icon:before {
   content: '';
   display: inline-block;
   background-size: 1.5rem;
@@ -524,7 +524,39 @@ body:fullscreen {
   background-image: url('img/github.svg');
   margin: 0 0.5rem;
   position: relative;
-  top: 0.375rem;
+  bottom: -0.1em;
+}
+.with-checkbox-on {
+  display: block;
+  list-style: none;
+}
+.with-checkbox-on:before {
+  content: '';
+  display: inline-block;
+  background-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  background-repeat: no-repeat;
+  background-image: url('img/checkbox-on.svg');
+  margin: 0 0.5rem;
+  position: relative;
+  bottom: -0.1em;
+}
+.with-checkbox-off {
+  display: block;
+  list-style: none;
+}
+.with-checkbox-off:before {
+  content: '';
+  display: inline-block;
+  background-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  background-repeat: no-repeat;
+  background-image: url('img/checkbox-off.svg');
+  margin: 0 0.5rem;
+  position: relative;
+  bottom: -0.1em;
 }
 .with-cursor {
   position: relative;
@@ -533,172 +565,190 @@ body:fullscreen {
 .with-cursor:after {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
   background-image: url('img/cursor.png');
   background-size: 1.5rem 1.5rem;
+  top: 50%;
+  left: 50%;
   width: 1.5rem;
   height: 1.5rem;
 }
+.with-bottom-cursor {
+  position: relative;
+  display: inline-block;
+}
+.with-bottom-cursor:after {
+  content: "";
+  position: absolute;
+  background-image: url('img/cursor.png');
+  background-size: 1.5rem 1.5rem;
+  bottom: 0%;
+  right: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.list-no-marker > * {
+  list-style-type: none;
+  margin-left: -1rem;
+}
 .width-1 {
-  max-width: 1rem;
+  width: 1rem;
   height: auto;
 }
 .width-1 > * {
-  max-width: 1rem;
+  width: 1rem;
   height: auto;
 }
 .width-2 {
-  max-width: 2rem;
+  width: 2rem;
   height: auto;
 }
 .width-2 > * {
-  max-width: 2rem;
+  width: 2rem;
   height: auto;
 }
 .width-3 {
-  max-width: 3rem;
+  width: 3rem;
   height: auto;
 }
 .width-3 > * {
-  max-width: 3rem;
+  width: 3rem;
   height: auto;
 }
 .width-4 {
-  max-width: 4rem;
+  width: 4rem;
   height: auto;
 }
 .width-4 > * {
-  max-width: 4rem;
+  width: 4rem;
   height: auto;
 }
 .width-5 {
-  max-width: 5rem;
+  width: 5rem;
   height: auto;
 }
 .width-5 > * {
-  max-width: 5rem;
+  width: 5rem;
   height: auto;
 }
 .width-6 {
-  max-width: 6rem;
+  width: 6rem;
   height: auto;
 }
 .width-6 > * {
-  max-width: 6rem;
+  width: 6rem;
   height: auto;
 }
 .width-7 {
-  max-width: 7rem;
+  width: 7rem;
   height: auto;
 }
 .width-7 > * {
-  max-width: 7rem;
+  width: 7rem;
   height: auto;
 }
 .width-8 {
-  max-width: 8rem;
+  width: 8rem;
   height: auto;
 }
 .width-8 > * {
-  max-width: 8rem;
+  width: 8rem;
   height: auto;
 }
 .width-9 {
-  max-width: 9rem;
+  width: 9rem;
   height: auto;
 }
 .width-9 > * {
-  max-width: 9rem;
+  width: 9rem;
   height: auto;
 }
 .width-10 {
-  max-width: 10rem;
+  width: 10rem;
   height: auto;
 }
 .width-10 > * {
-  max-width: 10rem;
+  width: 10rem;
   height: auto;
 }
 .height-1 {
   width: auto;
-  max-height: 1rem;
+  height: 1rem;
 }
 .height-1 > * {
   width: auto;
-  max-height: 1rem;
+  height: 1rem;
 }
 .height-2 {
   width: auto;
-  max-height: 2rem;
+  height: 2rem;
 }
 .height-2 > * {
   width: auto;
-  max-height: 2rem;
+  height: 2rem;
 }
 .height-3 {
   width: auto;
-  max-height: 3rem;
+  height: 3rem;
 }
 .height-3 > * {
   width: auto;
-  max-height: 3rem;
+  height: 3rem;
 }
 .height-4 {
   width: auto;
-  max-height: 4rem;
+  height: 4rem;
 }
 .height-4 > * {
   width: auto;
-  max-height: 4rem;
+  height: 4rem;
 }
 .height-5 {
   width: auto;
-  max-height: 5rem;
+  height: 5rem;
 }
 .height-5 > * {
   width: auto;
-  max-height: 5rem;
+  height: 5rem;
 }
 .height-6 {
   width: auto;
-  max-height: 6rem;
+  height: 6rem;
 }
 .height-6 > * {
   width: auto;
-  max-height: 6rem;
+  height: 6rem;
 }
 .height-7 {
   width: auto;
-  max-height: 7rem;
+  height: 7rem;
 }
 .height-7 > * {
   width: auto;
-  max-height: 7rem;
+  height: 7rem;
 }
 .height-8 {
   width: auto;
-  max-height: 8rem;
+  height: 8rem;
 }
 .height-8 > * {
   width: auto;
-  max-height: 8rem;
+  height: 8rem;
 }
 .height-9 {
   width: auto;
-  max-height: 9rem;
+  height: 9rem;
 }
 .height-9 > * {
   width: auto;
-  max-height: 9rem;
+  height: 9rem;
 }
 .height-10 {
   width: auto;
-  max-height: 10rem;
+  height: 10rem;
 }
 .height-10 > * {
   width: auto;
-  max-height: 10rem;
+  height: 10rem;
 }
 .float-top-90 {
   position: absolute;

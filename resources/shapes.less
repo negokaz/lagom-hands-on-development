@@ -47,7 +47,7 @@
 .footnote {
   width: 85%;
   position: absolute;
-  bottom: 4rem;
+  bottom: 3rem;
   text-align: right;
   font-size: 0.6rem;
 }
@@ -99,8 +99,27 @@
   .list-style-svg('img/github.svg', 1.5rem);
 }
 
+.with-checkbox-on {
+  display: block;
+  .list-style-svg('img/checkbox-on.svg', 1rem);
+}
+
+.with-checkbox-off {
+  display: block;
+  .list-style-svg('img/checkbox-off.svg', 1rem);
+}
+
 .with-cursor {
   .center-overlay(1.5rem, 1.5rem, url('img/cursor.png'));
+}
+
+.with-bottom-cursor {
+  .right-overlay(1.5rem, 1.5rem, 50%, 0%, url('img/cursor.png'));
+}
+
+.list-no-marker > * {
+  list-style-type: none;
+  margin-left: -1rem;
 }
 
 .width-1 {

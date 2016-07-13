@@ -1,53 +1,70 @@
 .list-style-svg (@url, @size) {
 
-    * {
-      list-style: none;
+  list-style: none;
 
-      &:before {
-        content: '';
-        display: inline-block;
-        background-size: @size;
-        width: @size;
-        height: @size;
-        background-repeat: no-repeat;
-        background-image: url(@url);
-        margin: 0 0.5rem;
-        position: relative;
-        top: @size / 4;
-      }
-    }
+  &:before {
+    content: '';
+    display: inline-block;
+    background-size: @size;
+    width: @size;
+    height: @size;
+    background-repeat: no-repeat;
+    background-image: url(@url);
+    margin: 0 0.5rem;
+    position: relative;
+    bottom: -0.1em;
+  }
 }
 
 .width(@size) {
-    max-width:  @size;
+    width:  @size;
     height: auto;
 
      > * {
-      max-width:  @size;
+      width:  @size;
       height: auto;
     }
 }
 
 .height(@size) {
     width:  auto;
-    max-height: @size;
+    height: @size;
 
      > * {
       width:  auto;
-      max-height: @size;
+      height: @size;
     }
 }
 
 .center-overlay(@width, @height, @image) {
+  .left-overlay(@width, @height, 50%, 50%, @image);
+}
+
+.left-overlay(@width, @height, @position-left, @position-top, @image) {
   position: relative;
   display: inline-block;
   &:after {
     content: "";
     position: absolute;
-    top: 50%;
-    left: 50%;
     background-image: @image;
     background-size: @width @height;
+    top: @position-top;
+    left: @position-left;
+    width: @width;
+    height: @height;
+  }
+}
+
+.right-overlay(@width, @height, @position-right, @position-bottom, @image) {
+  position: relative;
+  display: inline-block;
+  &:after {
+    content: "";
+    position: absolute;
+    background-image: @image;
+    background-size: @width @height;
+    bottom: @position-bottom;
+    right: @position-right;
     width: @width;
     height: @height;
   }

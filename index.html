@@ -7,6 +7,10 @@
   <link rel="stylesheet" type="text/css" href="resources/light-theme.css" />
 </head>
 <body>
+<div class="remote-controller">
+  <label for="enable-sync" class="subscribe-control">スライドを同期:</label>
+  <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
+</div>
 <textarea id="source">
 
 ## 準備
@@ -355,13 +359,69 @@ Lagom外からHTTPなどでリクエストを投げる場合は注意
 TODO: なぜ全部非同期なのか？
 
 </textarea>
+  <style>
+    .remote-controller label {
+      font-size: 0.6rem;
+      color: rgba(0, 0, 0, 0.60);
+    }
+    .remote-controller input[type="checkbox"] {
+      width:  0.5rem;
+      height: 0.5rem;
+    }
+    @media print {
+      .remote-controller {
+        visibility: hidden;
+      }
+    }
+  </style>
   <script src="resources/remark-0.13.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script src="resources/reconnecting-websocket.min.js"></script>
+  <script src="resources/remark-remote.js"></script>
   <script>
+
     var slideshow = remark.create({
       highlightStyle: 'monokai',
       highlightLines: true,
       highlightSpans: true
     });
+
+    $(function() {
+      // var remote = remark.remote(slideshow, "ws://localhost:9000/");
+      var remote = remark.remote(slideshow, "wss://stark-dusk-4378.herokuapp.com/");
+      console.log(remote);
+      remote.ondisconnect = function() {
+        alert("通信が切れました。同期を有効にするにはリロードする必要があります。");
+      };
+      if (window.location.search && window.location.search == "?control=true") {
+        // Controllers
+        $(".subscribe-control").hide();
+        var passcode = window.prompt("passcode?", "");
+        if (passcode === null) {
+          return;
+        }
+        remote.control(passcode);
+      } else {
+        // Follower
+        var following = remote.follow();
+        var $enableSync = $("#enable-sync");
+        following.followWhen = function() {
+          return $enableSync.prop("checked");
+        };
+        $enableSync.click(function() {
+          if ($enableSync.prop("checked")) {
+            following.sync();
+          }
+        });
+        following.ondefiance = function() {
+          $enableSync.prop("checked", false);
+        };
+      }
+    });
+  </script>
+  <script>
+    // 全てのリンクが別のタブで開くようにする
+    $('a').attr({target: "_blank"});
   </script>
 </body>
 </html>

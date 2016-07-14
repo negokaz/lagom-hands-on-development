@@ -1,6 +1,7 @@
-.list-style-svg (@url, @size) {
+.list-style-svg (@url, @size, @maker-gap: 0.4em) {
 
   list-style: none;
+  padding-left: calc(@size + @marker-gap);
 
   &:before {
     content: '';
@@ -10,9 +11,10 @@
     height: @size;
     background-repeat: no-repeat;
     background-image: url(@url);
-    margin: 0 0.5rem;
     position: relative;
+    margin-left: -@size;
     bottom: -0.1em;
+    left: -@marker-gap;
   }
 }
 
@@ -45,6 +47,7 @@
   display: inline-block;
   &:after {
     content: "";
+    z-index: 999;
     position: absolute;
     background-image: @image;
     background-size: @width @height;
@@ -60,6 +63,7 @@
   display: inline-block;
   &:after {
     content: "";
+    z-index: 999;
     position: absolute;
     background-image: @image;
     background-size: @width @height;

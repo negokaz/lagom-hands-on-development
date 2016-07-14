@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="remote-controller">
-  <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
+  <input type="checkbox" id="enable-sync" class="subscribe-control" unchecked />
   <label for="enable-sync" class="subscribe-control">スライドを同期</label>
 </div>
 <textarea id="source">
@@ -98,6 +98,7 @@ http://martinfowler.com/articles/microservices.html
 ## MSAのトピックス
 
 * アプリケーション
+* ドメイン駆動設計
 * インフラストラクチャ
 * (人の)組織
 * システム運用
@@ -108,6 +109,7 @@ http://martinfowler.com/articles/microservices.html
 ## 今日やること・やらないこと
 
 * **.accent[アプリケーション]**
+* ~~ドメイン駆動設計~~
 * ~~インフラストラクチャ~~
 * ~~(人の)組織~~
 * ~~システム運用~~
@@ -153,7 +155,7 @@ http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
 ---
 class: center, middle
 
-# ハンズオン
+# Hands-On
 
 ---
 
@@ -162,8 +164,7 @@ class: center, middle
 .list-no-marker[
 * .with-checkbox-off[アプリの概要を知る]
 * .with-checkbox-off[アプリのAPIを呼んでみる]
-* .with-checkbox-off[Write-side の実装]
-* .with-checkbox-off[Read-side の実装]
+* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
 * .with-checkbox-off[CircuitBreaker の実装]
 ]
 
@@ -201,11 +202,13 @@ $ bin/activator runAll
 * [info] (Services started, use Ctrl+D to stop and go back to the console...) # 起動完了
 ```
 
+⇒ 起動後、Chromeで [http://localhost:9000](http://localhost:9000) にアクセス
+
 ---
 ## サインアップ
 
 .center[
-[.height-5.with-cursor[![](resources/img/chirper-signup.svg)]](http://localhost:9000/signup)
+[.with-array-to-bottom[.height-5.with-cursor[![](resources/img/chirper-signup.svg)]]](http://localhost:9000/signup)
 
 .height-8.with-bottom-cursor[![](resources/img/chirper-signup-submit.svg)]
 ]
@@ -236,22 +239,51 @@ $ bin/activator runAll
 
 ---
 
-## サービスの構成
+## サービスの構成 - 依存関係
 
-
-
----
-
-## Serialization
-
-* Lagom では同期呼び出しと非同期呼び出しがサポートされている
-* 同期呼び出し - HTTP
-* 非同期呼び出し - WebSocket
-* フォーマットはJSONがデフォルトでサポートされている
+.center[![](resources/img/services-dependency.svg)]
 
 ---
 
-## Hands-on 1 - Lagom のAPIを叩いてみる
+## サービスの構成 - 状態を更新
+
+.center[![](resources/img/services-write.svg)]
+
+---
+
+## サービスの構成 - 情報を取得
+
+.center[![](resources/img/services-read.svg)]
+
+---
+
+## TODO
+
+.list-no-marker[
+* .with-checkbox-on[アプリの概要を知る]
+* .with-checkbox-off[アプリのAPIを呼んでみる]
+* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
+* .with-checkbox-off[CircuitBreaker の実装]
+]
+
+---
+class: center, middle
+
+## Hands-On STEP 1
+# アプリのAPIを呼んでみる
+
+---
+
+## Lagom のAPI呼び出し
+
+* Lagomでは同期呼び出しと非同期呼び出しをサポート
+* 同期呼び出し ⇒ HTTP (request-response)
+* 非同期呼び出し ⇒ WebSocket
+* シリアライズはJSONがサポートされている
+
+---
+
+## アプリのAPIを呼んでみる
 
 [Advanced REST Client を起動](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/)
 
@@ -265,40 +297,212 @@ $ bin/activator runAll
 
 ---
 
-## イベントソーシングとCQRS
+## APIの実装を確認
+
+.small[[FavoriteService.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java)]
+```java
+ServiceCall<FavoriteId, NotUsed> addFavorite(String userId);
+
+@Override
+default Descriptor descriptor() {
+    return named("favoriteservice").withCalls(
+            pathCall(`"/api/favorites/:userId/add"`, this::addFavorite)
+    )
+}
+```
+
+* `pathCall` の第一引数が API のURLになる
+    * ⇒ http://localhost:9000/api/favorites/HOGE/add
+
+???
+
+this::addFavorite は **メソッド参照**
 
 ---
 
-## イベントソーシング
+## APIの実装を確認
+```java
+* ServiceCall<FavoriteId, NotUsed> addFavorite(String userId);
+
+@Override
+default Descriptor descriptor() {
+    return named("favoriteservice").withCalls(
+            pathCall("/api/favorites/:userId/add", `this::addFavorite`)
+    )
+}
+```
+* `ServiceCall` : APIの呼び出しを抽象化したもの
+    * 第一型引数: Request Body の型
+  .small[JSONから自動でデシリアライズされる]
+    * 第二型引数: Response Body の型
+  .small[[NotUsed](http://doc.akka.io/japi/akka/snapshot/akka/NotUsed$.html)はレスポンスボディ無しを表す]
+
+---
+
+## APIの実装を確認
+
+.small[[FavoriteServiceImpl.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteServiceImpl.java)]
+```java
+@Override
+public ServiceCall<FavoriteId, NotUsed> addFavorite(String userId) {
+    return request -> {
+        return CompletableFuture.completedFuture(NotUsed.getInstance());
+    };
+}
+```
+
+* 「リクエスト.small[(FavoriteId)]を受け取って.small[(NotUsedの)][CompletionStage](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html)を返す」関数を返す
+* ややこしいが、あまり気にせず`->`の先で`request`を使った処理を書けば良い
+
+???
+
+CompletionStage: CompletableFuture のスーパークラスで、未来で値になりうるものを表す
+
+---
+
+## TODO
+
+.list-no-marker[
+* .with-checkbox-on[アプリの概要を知る]
+* .with-checkbox-on[アプリのAPIを呼んでみる]
+* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
+* .with-checkbox-off[CircuitBreaker の実装]
+]
+
+---
+class: center, middle
+
+# 永続化機能(ES+CQRS)の実装
+
+---
+
+## Event Sourcing と CQRS
+
+---
+
+## Event Sourcing
 
 * システムの中で起きた**イベント**を永続化する
 * イベントは不変(immutable)
     * キャッシュ、コピー、共有が容易にできる
     * ⇒ スケールしやすくなる
-* デメリットは、データを集計するような場合大変
-* ⇒ CQRSで回避できる
+* デメリット
+  * データの集計にコストがかかる
+  * ⇒ CQRSで解決できる
 
 ---
 
-## CQRS
+## CQRS (1/2)
 
-* **C**ommand and **Q**uery **R**esponsibility **S**egregation <br />
-
+* **C**ommand and **Q**uery **R**esponsibility **S**egregation
     コマンドクエリ責務分離
-
 * コマンド(書き込み)とクエリ(読み込み)を分離する
 * 書き込み側と読み込み側で
-    * 異なるDB、データ構造を採用することができるようになる
+    * 異なるDB・データ構造が使える
     * 別々にスケールできるようになる
-* 書き込み側にイベントソーシングを使い、読み込み側にクエリしやすい形で保存できる
-* デメリットは、読み込み側と書き込み側で完全な一貫性を保てなること
+    * ⇒ Write-Side にイベントソーシングを使い<br>Read-Side に集計しやすい形で永続化する
 
 ---
 
-## Hands-on 2 - Write-Side の実装
+## CQRS (2/2)
 
-1. FavoriteEntity を実装する
-2. FavoriteServiceImpl から FavoriteEntity にコマンドを送る
+* デメリット
+    * 書き込み・読み込みで完全な一貫性を保てなくなる
+    * 十分な時間が経つと整合性がとれる (結果整合性)
+    * ⇒ 結果整合性があっても問題ないように
+    ビジネスやシステムを設計する
+
+---
+
+## TODO
+
+.list-no-marker[
+* .with-checkbox-on[アプリの概要を知る]
+* .with-checkbox-on[アプリのAPIを呼んでみる]
+* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
+* .with-checkbox-off[CircuitBreaker の実装]
+]
+
+---
+
+## TODO
+
+.list-no-marker[
+* .with-checkbox-on[アプリの概要を知る]
+* .with-checkbox-on[アプリのAPIを呼んでみる]
+* ~~.with-checkbox-off[永続化機能(ES+CQRS)の実装]~~
+* **.with-checkbox-off[CQRS Write-Side の実装]**
+* **.with-checkbox-off[CQRS Read-Side の実装]**
+* .with-checkbox-off[CircuitBreaker の実装]
+]
+
+---
+class: center, middle
+
+## Hands-On STEP 2
+# CQRS Write-Side の実装
+
+---
+
+## 機能のおさらい
+
+.center[![](resources/img/favorite-functions-write.svg)]
+
+---
+
+## CQRS Write-Side の実装
+
+### TODO
+1. .with-checkbox-off[FavoriteEntity を実装する]
+2. .with-checkbox-off[FavoriteServiceImpl から FavoriteEntity にコマンドを送る]
+
+---
+
+## CQRS Write-Side の実装
+
+.with-checkbox-off[FavoriteEntity を実装する]
+
+* Entity とは、サービスの状態を持つもの
+* コマンドを受け取り、自身の状態を更新し、結果を返す
+* 状態はDBに永続化する
+* コマンドとレスポンスは既に用意してあります
+    * [FavoriteCommand.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteCommand.java)
+
+???
+
+DDDにおけるEntityと一致します。
+
+---
+
+## CQRS Write-Side の実装
+
+
+```java
+/**
+ * 生成直後の Entity の"振る舞い"を定義するメソッド。
+ * Entity の状態などによって、違う振る舞いに変更することもできる。
+ *
+ * @param snapshotState {@link FavoriteState} のスナップショット
+ *                      Entity の生成直後は empty。
+ *                      Entity の状態を復元する時間を短くするために、
+ *                      一定数のイベントが来たタイミングでそのときの状態が永続化される。
+ *                      http://www.lagomframework.com/documentation/1.0.x/java/PersistentEntity.html#snapshots
+ */
+@Override
+public Behavior `initialBehavior`(Optional<FavoriteState> `snapshotState`) {
+```
+
+---
+
+## CQRS Write-Side の実装
+
+```java
+public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
+    BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
+}
+```
+
+---
 
 ## 確認
 
@@ -306,7 +510,25 @@ $ bin/activator runAll
 
 ---
 
-## Hands-on 3 - Read-Side の実装
+## TODO
+
+.list-no-marker[
+* .with-checkbox-on[アプリの概要を知る]
+* .with-checkbox-on[アプリのAPIを呼んでみる]
+* .with-checkbox-on[CQRS Write-Side の実装]
+* .with-checkbox-off[CQRS Read-Side の実装]
+* .with-checkbox-off[CircuitBreaker の実装]
+]
+
+---
+class: center, middle
+
+## Hands-On STEP 3
+# CQRS Read-Side の実装
+
+---
+
+## CQRS Read-Side の実装
 
 1. FavoriteEventProcessor を実装する
 2. FavoriteServiceImpl からクエリする
@@ -318,16 +540,38 @@ $ bin/activator runAll
 
 ---
 
+## TODO
+
+.list-no-marker[
+* .with-checkbox-on[アプリの概要を知る]
+* .with-checkbox-on[アプリのAPIを呼んでみる]
+* .with-checkbox-on[Write-side の実装]
+* .with-checkbox-on[Read-side の実装]
+* .with-checkbox-off[CircuitBreaker の実装]
+]
+
+---
+class: center, middle
+
+## Hands-On STEP 4
+# CircuitBreaker の実装
+
+---
+
 ## CircuitBreaker とは？
 
-* open-close-halfopen
+* Open・Close・Half-Open の状態をとる
 * 障害を波及させない
 * リクエスト爆発を起こさない
 
 ---
 
-.height-10[
+.center.height-7[
 ![](http://www.lagomframework.com/documentation/1.0.x/java/resources/guide/services/circuit-breaker-states.png)
+]
+
+.footnote[
+引用: [Lagom #Consuming services](http://www.lagomframework.com/documentation/1.0.x/java/ServiceClients.html)
 ]
 
 ---
@@ -357,6 +601,10 @@ Lagom外からHTTPなどでリクエストを投げる場合は注意
 ???
 
 TODO: なぜ全部非同期なのか？
+
+---
+
+## 広告
 
 </textarea>
   <style>

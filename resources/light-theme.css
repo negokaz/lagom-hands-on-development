@@ -498,6 +498,7 @@ body:fullscreen {
 }
 .twitter-icon {
   list-style: none;
+  padding-left: 1.4em;
 }
 .twitter-icon:before {
   content: '';
@@ -507,12 +508,14 @@ body:fullscreen {
   height: 1.5rem;
   background-repeat: no-repeat;
   background-image: url('img/twitter.svg');
-  margin: 0 0.5rem;
   position: relative;
+  margin-left: -1em;
   bottom: -0.1em;
+  left: -0.4em;
 }
 .github-icon {
   list-style: none;
+  padding-left: 1.4em;
 }
 .github-icon:before {
   content: '';
@@ -522,13 +525,15 @@ body:fullscreen {
   height: 1.5rem;
   background-repeat: no-repeat;
   background-image: url('img/github.svg');
-  margin: 0 0.5rem;
   position: relative;
+  margin-left: -1em;
   bottom: -0.1em;
+  left: -0.4em;
 }
 .with-checkbox-on {
   display: block;
   list-style: none;
+  padding-left: 1.4em;
 }
 .with-checkbox-on:before {
   content: '';
@@ -538,13 +543,15 @@ body:fullscreen {
   height: 1rem;
   background-repeat: no-repeat;
   background-image: url('img/checkbox-on.svg');
-  margin: 0 0.5rem;
   position: relative;
+  margin-left: -1em;
   bottom: -0.1em;
+  left: -0.4em;
 }
 .with-checkbox-off {
   display: block;
   list-style: none;
+  padding-left: 1.4em;
 }
 .with-checkbox-off:before {
   content: '';
@@ -554,9 +561,10 @@ body:fullscreen {
   height: 1rem;
   background-repeat: no-repeat;
   background-image: url('img/checkbox-off.svg');
-  margin: 0 0.5rem;
   position: relative;
+  margin-left: -1em;
   bottom: -0.1em;
+  left: -0.4em;
 }
 .with-cursor {
   position: relative;
@@ -564,6 +572,7 @@ body:fullscreen {
 }
 .with-cursor:after {
   content: "";
+  z-index: 999;
   position: absolute;
   background-image: url('img/cursor.png');
   background-size: 1.5rem 1.5rem;
@@ -578,6 +587,7 @@ body:fullscreen {
 }
 .with-bottom-cursor:after {
   content: "";
+  z-index: 999;
   position: absolute;
   background-image: url('img/cursor.png');
   background-size: 1.5rem 1.5rem;
@@ -585,6 +595,21 @@ body:fullscreen {
   right: 50%;
   width: 1.5rem;
   height: 1.5rem;
+}
+.with-array-to-bottom {
+  position: relative;
+  display: inline-block;
+}
+.with-array-to-bottom:after {
+  content: "";
+  z-index: 999;
+  position: absolute;
+  background-image: url('img/arrow-to-bottom.svg');
+  background-size: 3.5rem 3.5rem;
+  top: 80%;
+  left: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
 }
 .list-no-marker > * {
   list-style-type: none;

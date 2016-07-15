@@ -42,7 +42,7 @@ background-image: url("resources/img/title-background.jpg")
     * Lightbend Reactive Platform
         * Akka / Play framework / Scala
 
-.twitter-icon[[@negokaz](https://twitter.com/negokaz)] .github-icon[[negokaz](https://github.com/negokaz)]
+.with-twitter-icon[[@negokaz](https://twitter.com/negokaz)] .with-github-icon[[negokaz](https://github.com/negokaz)]
 
 ???
 
@@ -57,7 +57,7 @@ background-image: url("resources/img/title-background.jpg")
 
 * 2014年3月に ThoughtWorks社 の Martin Fowler によって提唱された
 * 小さいサービスを組み合わせて 一つのアプリケーションを構築するスタイルのこと
-* サービスどうしを疎結合にすることにより 様々な利点が得られる
+* サービス同士を疎結合にすることにより 様々な利点が得られる
 * (長いので以降は**MSA**と略します)
 
 ???
@@ -73,33 +73,30 @@ http://martinfowler.com/articles/microservices.html
 
 ---
 
-## 疎結合にすると得られる利点 (1/2)
+## MSAの利点 (1/2)
 
 * サービスごとに異なる技術が使える
   * サービスの特性に合った技術を採用できる
-* レジリエンス(回復性)が得られる
-  * 一部のサービスが止まっても全体としては動き続ける
-  * すぐに障害から復旧できれば ユーザーからは何事も無かったかのように見える
-
-???
-
-「MSAにすると得られる利点」に言い換えられる
+* デプロイの影響範囲を小さくできる
+  * 新機能や修正を迅速にリリースできる
 
 ---
 
-## 疎結合にすると得られる利点 (2/2)
+## MSAの利点 (2/2)
+
+* レジリエンス(回復性)が得られる
+    * 一部のサービスが止まっても全体としては動き続ける
+    * すぐに障害から回復できれば ユーザーからは何事も無かったかのように見える
 * サービスごとにスケールできる
-  * 無駄なリソースを確保しないのでコスト効率が良い
-* デプロイの影響範囲を小さくできる
-  * 新機能や修正を迅速にリリースできる
+  * リソースの無駄が少なくなるためコスト効率が良い
 
 ---
 
 ## MSAのトピックス
 
 * アプリケーション
-* ドメイン駆動設計
 * インフラストラクチャ
+* ドメイン駆動設計
 * (人の)組織
 * システム運用
 * セキュリティ
@@ -108,9 +105,9 @@ http://martinfowler.com/articles/microservices.html
 
 ## 今日やること・やらないこと
 
-* **.accent[アプリケーション]**
-* ~~ドメイン駆動設計~~
+* .strong[アプリケーション]
 * ~~インフラストラクチャ~~
+* ~~ドメイン駆動設計~~
 * ~~(人の)組織~~
 * ~~システム運用~~
 * ~~セキュリティ~~
@@ -119,77 +116,92 @@ http://martinfowler.com/articles/microservices.html
 
 ## 今日やること
 
-* MSA向けフレームワーク Lagom から、アプリケーションの設計パターンを学び取る
+* MSA向けフレームワーク .strong[Lagom] から、MSAにおけるアプリケーションの設計パターンを学ぶ
 
 ---
 
 ## Lagom とは？
 
 * Lightbend社が3月にリリースしたMSA向けフレームワーク
-* **Reactive** Microservices Architecture をコアコンセプトとしている
+* 提供されている内部APIは Java
+* コアコンセプトは **Reactive** Microservices Architecture
+    * 大規模なシステムがターゲット
 
 .footnote[
 [https://www.lightbend.com/lagom](https://www.lightbend.com/lagom)
 
 [Reactive Microservices Architecture (O’Reilly)](http://www.oreilly.com/programming/free/reactive-microservices-architecture.html)
 ]
-
 ???
 https://www.lightbend.com/company/news/lagom-a-new-microservices-framework
 http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
+---
+
+## Lagom が目指すもの
+
+.center[
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/bpqBuXOj1fENSp?startSlide=29" width="476" height="388" frameborder="1" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+]
+
+.footnote[
+[リアクティブ・アーキテクチャ ～大規模サービスにおける必要性と課題〜](http://www.slideshare.net/okapies/reactive-architecture-20160218-58403521)
+]
+
+--
+
+.float-bottom-10.center.glass-deep[
+.therefore[Lagom にはこの性質を達成するための設計ポリシーがある]
+]
 
 ---
 
-## Lagom の主な設計ポリシー
+## Lagom の特徴的な設計ポリシー
 
-* シンプルなHTTPによるサービス連携
-* 分散型の永続化機構
-  * CQRS
-  * Event Sourcing
-* 外部APIの呼び出しは CircuitBreaker がデフォルトで有効
 * サービス内部で使うAPIは全て非同期API
+* 分散型の永続化機構
+  * Event Sourcing
+  * CQRS
+* 外部APIの呼び出しは CircuitBreaker がデフォルトで有効
 
+.footnote[
+[Lagom #Lagom design philosophy](http://www.lagomframework.com/documentation/1.0.x/java/LagomDesignPhilosophy.html)
+
+[Lagom #Polyglot systems with Lagom](http://www.lagomframework.com/documentation/1.0.x/java/PolyglotSystems.html)
+]
 ???
 今日詳しく見ていくもの
 
 ---
 class: center, middle
 
-# Hands-On
+# 今日 Lagom で作るもの
 
 ---
 
-## TODO
-
-.list-no-marker[
-* .with-checkbox-off[アプリの概要を知る]
-* .with-checkbox-off[アプリのAPIを呼んでみる]
-* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
-* .with-checkbox-off[CircuitBreaker の実装]
-]
-
----
-class: center, middle
-
-# アプリの概要を知る
-
----
-
-## Chiper
+## Chirper
 
 Twitter ライクなアプリケーション
 
-* ユーザー登録
-* 他ユーザーのフォロー
-* つぶやく
+* .with-checkbox-on[ユーザー登録]
+* .with-checkbox-on[つぶやく]
+* .with-checkbox-on[他ユーザーのフォロー]
+* .with-checkbox-on[フォロワーと自分のつぶやきを閲覧]
 
 .footnote[
+[ネイティブっぽい発音は「ちぇぁぱー」](https://translate.google.co.jp/#en/ja/Chirper)
+
 [https://github.com/lagom/activator-lagom-java-chirper](https://github.com/lagom/activator-lagom-java-chirper)
 ]
 
 --
 
-* .accent[お気に入り (New!)]
+* .with-checkbox-off[.strong[お気に入り (New!)] → WIP]
+
+---
+class: center, middle
+
+## Hands-On STEP 1
+# はじめての Chirper
 
 ---
 
@@ -220,70 +232,85 @@ $ bin/activator runAll
 
 ---
 
-## お気に入り
-
-* 今日実装する部分
+## タイムライン
 
 .height-6[![](resources/img/chirper-favorite.svg)]
 
 ---
 
-## 最終的に目指す形
+## 現在の進捗
 
 .center[
 .height-6[![](resources/img/chirper-favorite-implemented.svg)]
 ]
 
-* [画面を開き直しても](http://localhost:9000/)お気に入りになっている
-* お気に入りされている数が見れる
+* UIと一部APIは実装済み
+* お気に入り解除しても開きなおすとお気に入りが復活
+* お気に入りされてもカウントが常に 0
 
 ---
 
-## サービスの構成 - 依存関係
+## 達成したいこと
 
-.center[![](resources/img/services-dependency.svg)]
-
----
-
-## サービスの構成 - 状態を更新
-
-.center[![](resources/img/services-write.svg)]
-
----
-
-## サービスの構成 - 情報を取得
-
-.center[![](resources/img/services-read.svg)]
-
----
-
-## TODO
-
-.list-no-marker[
-* .with-checkbox-on[アプリの概要を知る]
-* .with-checkbox-off[アプリのAPIを呼んでみる]
-* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
-* .with-checkbox-off[CircuitBreaker の実装]
+.center[
+.height-6[![](resources/img/chirper-favorite-implemented.svg)]
 ]
+
+* 間違ってお気に入りしてしまったものを解除できる
+* お気に入りされた数が確認できる
+
+---
+
+## サービスの構成 (1/2)
+
+.center[![](resources/img/services1.svg)]
+
+---
+
+## サービスの構成 (2/2)
+
+.center[![](resources/img/services2.svg)]
+
+---
+
+## サービスのAPI - 更新系
+
+.center[![](resources/img/services-write1.svg)]
+
+---
+
+## サービスのAPI - 更新系
+
+.center[![](resources/img/services-write2.svg)]
+---
+
+## サービスのAPI - 読取系
+
+.center[![](resources/img/services-read1.svg)]
+
+---
+
+## サービスのAPI - 読取系
+
+.center[![](resources/img/services-read2.svg)]
 
 ---
 class: center, middle
 
-## Hands-On STEP 1
-# アプリのAPIを呼んでみる
+## Hands-On STEP 2
+# サービスのAPIを呼んでみる
 
 ---
 
 ## Lagom のAPI呼び出し
 
-* Lagomでは同期呼び出しと非同期呼び出しをサポート
-* 同期呼び出し ⇒ HTTP (request-response)
-* 非同期呼び出し ⇒ WebSocket
-* シリアライズはJSONがサポートされている
+* Lagomで作成した API は **HTTP** で呼び出せる
+* 基本的にデータは **JSON** でやりとりする
+    * Serialize・Deserialize が標準サポートされている
 
 ---
 
-## アプリのAPIを呼んでみる
+## ブラウザからAPIを呼んでみる
 
 [Advanced REST Client を起動](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/)
 
@@ -293,90 +320,141 @@ class: center, middle
 
 ### HTTP
 
-### WebSocket
-
 ---
 
-## APIの実装を確認
+## Lagom の内部APIで呼んでみる
 
-.small[[FavoriteService.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java)]
 ```java
-ServiceCall<FavoriteId, NotUsed> addFavorite(String userId);
+  public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
+          /////////////////////////////////////////
+          // TODO: 何行目？
+          return recentChirpSource.thenApply(source -> {
+            return source.mapAsync(2, chirp -> {
 
-@Override
-default Descriptor descriptor() {
-    return named("favoriteservice").withCalls(
-            pathCall(`"/api/favorites/:userId/add"`, this::addFavorite)
-    )
+              CompletionStage<Integer> favorCount =
+                      CompletableFuture.completedFuture(0);
+
+              // つぶやきにお気に入りの情報を追加
+              CompletionStage<Chirp> chirpAppliedFavorite =
+                favorites.thenCompose(favs ->
+                favorCount.thenApply(count ->
+                  favs.contains(chirp.getUuid())
+                          ? chirp.withIsFavorite(true).withFavorCount(count)
+                          : chirp.withFavorCount(count)
+                ));
+
+              return chirpAppliedFavorite;
+            });
+          });
+          /////////////////////////////////////////
 }
 ```
 
-* `pathCall` の第一引数が API のURLになる
-    * ⇒ http://localhost:9000/api/favorites/HOGE/add
-
-???
-
-this::addFavorite は **メソッド参照**
-
 ---
 
-## APIの実装を確認
+## Lagom の内部APIで呼んでみる
+
 ```java
-* ServiceCall<FavoriteId, NotUsed> addFavorite(String userId);
+  public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
+          /////////////////////////////////////////
+          // TODO: 何行目？
+          return recentChirpSource.thenApply(source -> {
+            return source.mapAsync(2, chirp -> {
 
-@Override
-default Descriptor descriptor() {
-    return named("favoriteservice").withCalls(
-            pathCall("/api/favorites/:userId/add", `this::addFavorite`)
-    )
-}
-```
-* `ServiceCall` : APIの呼び出しを抽象化したもの
-    * 第一型引数: Request Body の型
-  .small[JSONから自動でデシリアライズされる]
-    * 第二型引数: Response Body の型
-  .small[[NotUsed](http://doc.akka.io/japi/akka/snapshot/akka/NotUsed$.html)はレスポンスボディ無しを表す]
+              CompletionStage<Integer> favorCount =
+*                     favoriteService.getFavorCount(chirp.getUuid()).invoke();
 
----
+              // つぶやきにお気に入りの情報を追加
+              CompletionStage<Chirp> chirpAppliedFavorite =
+                favorites.thenCompose(favs ->
+                favorCount.thenApply(count ->
+                  favs.contains(chirp.getUuid())
+                          ? chirp.withIsFavorite(true).withFavorCount(count)
+                          : chirp.withFavorCount(count)
+                ));
 
-## APIの実装を確認
-
-.small[[FavoriteServiceImpl.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteServiceImpl.java)]
-```java
-@Override
-public ServiceCall<FavoriteId, NotUsed> addFavorite(String userId) {
-    return request -> {
-        return CompletableFuture.completedFuture(NotUsed.getInstance());
-    };
+              return chirpAppliedFavorite;
+            });
+          });
+          /////////////////////////////////////////
 }
 ```
 
-* 「リクエスト.small[(FavoriteId)]を受け取って.small[(NotUsedの)][CompletionStage](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html)を返す」関数を返す
-* ややこしいが、あまり気にせず`->`の先で`request`を使った処理を書けば良い
+---
 
-???
+## 動きの確認
 
-CompletionStage: CompletableFuture のスーパークラスで、未来で値になりうるものを表す
+* お気に入りされた数が確認できる
 
 ---
 
-## TODO
+## Lagom の内部APIで呼んでみる
 
-.list-no-marker[
-* .with-checkbox-on[アプリの概要を知る]
-* .with-checkbox-on[アプリのAPIを呼んでみる]
-* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
-* .with-checkbox-off[CircuitBreaker の実装]
+```java
+  public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
+          /////////////////////////////////////////
+          // TODO: 何行目？
+          return recentChirpSource.thenApply(source -> {
+            return source.mapAsync(2, chirp -> {
+
+              CompletionStage<Integer> favorCount =
+*                     favoriteService.getFavorCount(chirp.getUuid()).invoke();
+
+              // つぶやきにお気に入りの情報を追加
+              CompletionStage<Chirp> chirpAppliedFavorite =
+                favorites.thenCompose(favs ->
+                favorCount.thenApply(count ->
+                  favs.contains(chirp.getUuid())
+                          ? chirp.withIsFavorite(true).withFavorCount(count)
+                          : chirp.withFavorCount(count)
+                ));
+
+              return chirpAppliedFavorite;
+            });
+          });
+          /////////////////////////////////////////
+}
+```
+
+.float-bottom-10.glass-deep.small[
+* `favoriteService` は 別プロセスで動く FavoriteService の Proxy
+* `getFavorCount` はお気に入りされた数を取得するAPI
+    * つぶやきのIDを渡す
+* `invoke` で結果の `CompletionStage<Integer>` が返ってくる
 ]
 
 ---
-class: center, middle
 
-# 永続化機能(ES+CQRS)の実装
+## なぜ非同期API？
+
+--
+* 応答速度のため
+--
+.center[![](resources/img/why-asynchronous.svg)]
 
 ---
 
-## Event Sourcing と CQRS
+## なぜ非同期API？
+
+* 応答速度のため
+
+* もっと呼び出すAPIが増えたら？
+    * レイテンシはより増大
+--
+
+* もっとリクエストが増えたら？
+    * CPUに余裕があるのにメモリが枯渇
+    * いわゆる C10K 問題
+
+---
+class: middle, center
+
+## Hands-On STEP 3
+# お気に入り解除の永続化
+
+---
+
+## Lagom における永続化
 
 ---
 
@@ -394,7 +472,7 @@ class: center, middle
 
 ## CQRS (1/2)
 
-* **C**ommand and **Q**uery **R**esponsibility **S**egregation
+* .bold[C]ommand and .bold[Q]uery .bold[R]esponsibility .bold[S]egregation
     コマンドクエリ責務分離
 * コマンド(書き込み)とクエリ(読み込み)を分離する
 * 書き込み側と読み込み側で
@@ -408,53 +486,80 @@ class: center, middle
 
 * デメリット
     * 書き込み・読み込みで完全な一貫性を保てなくなる
-    * 十分な時間が経つと整合性がとれる (結果整合性)
-    * ⇒ 結果整合性があっても問題ないように
-    ビジネスやシステムを設計する
-
----
-
-## TODO
-
-.list-no-marker[
-* .with-checkbox-on[アプリの概要を知る]
-* .with-checkbox-on[アプリのAPIを呼んでみる]
-* .with-checkbox-off[永続化機能(ES+CQRS)の実装]
-* .with-checkbox-off[CircuitBreaker の実装]
-]
-
----
-
-## TODO
-
-.list-no-marker[
-* .with-checkbox-on[アプリの概要を知る]
-* .with-checkbox-on[アプリのAPIを呼んでみる]
-* ~~.with-checkbox-off[永続化機能(ES+CQRS)の実装]~~
-* **.with-checkbox-off[CQRS Write-Side の実装]**
-* **.with-checkbox-off[CQRS Read-Side の実装]**
-* .with-checkbox-off[CircuitBreaker の実装]
-]
-
----
-class: center, middle
-
-## Hands-On STEP 2
-# CQRS Write-Side の実装
+      * 十分な時間が経つと整合性がとれる (結果整合性)
+      * ⇒ 結果整合性があっても問題ないように
+      ビジネスやシステムを設計する
 
 ---
 
 ## 機能のおさらい
 
-.center[![](resources/img/favorite-functions-write.svg)]
+.center[![](resources/img/services-write2.svg)]
 
 ---
 
-## CQRS Write-Side の実装
+## APIの実装を確認
 
-### TODO
-1. .with-checkbox-off[FavoriteEntity を実装する]
-2. .with-checkbox-off[FavoriteServiceImpl から FavoriteEntity にコマンドを送る]
+.small[[FavoriteService.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java)]
+```java
+ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
+
+@Override
+default Descriptor descriptor() {
+    return named("favoriteservice").withCalls(
+            pathCall("/api/favorites/:userId/delete", this::deleteFavorite)
+    )
+}
+```
+
+* `pathCall` の第一引数が API のURLになる
+    * ⇒ http://localhost:9000/api/favorites/HOGE/delete
+
+???
+
+this::addFavorite は **メソッド参照**
+
+---
+
+## APIの実装を確認
+```java
+* ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
+
+@Override
+default Descriptor descriptor() {
+    return named("favoriteservice").withCalls(
+            pathCall("/api/favorites/:userId/delete", this::deleteFavorite)
+    )
+}
+```
+* `ServiceCall` : APIの呼び出しを抽象化したもの
+    * 第一型引数: Request Body の型
+  .small[JSONから自動でデシリアライズされる]
+    * 第二型引数: Response Body の型
+  .small[[NotUsed](http://doc.akka.io/japi/akka/snapshot/akka/NotUsed$.html)はレスポンスボディ無しを表す]
+
+---
+
+## APIの実装を確認
+
+.small[[FavoriteServiceImpl.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteServiceImpl.java)]
+```java
+@Override
+public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
+    return request -> {
+        CompletionStage<Done> deleting =
+                favoriteEntityRef(userId).ask(DeleteFavorite.of(userId, request.getFavoriteId()));
+        return deleting.thenApply(ack -> NotUsed.getInstance());
+    };
+}
+```
+
+* 「リクエスト.small[(FavoriteId)]を受け取って.small[(NotUsedの)][CompletionStage](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html)を返す」関数を返す
+* ややこしいが、あまり気にせず`->`の先で`request`を使った処理を書けば良い
+
+???
+
+CompletionStage: CompletableFuture のスーパークラスで、未来のある時点で値になりうるものを表す
 
 ---
 
@@ -499,62 +604,66 @@ public Behavior `initialBehavior`(Optional<FavoriteState> `snapshotState`) {
 ```java
 public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
     BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
+
+    /*
+     * DeleteFavorite が送られてくる
+     *  → FavoriteDeleted イベントを作成
+     *  → イベントを永続化
+     *  → Done を送り返す
+     */
+    b.setCommandHandler(DeleteFavorite.class,
+        (request, ctx) -> {
+            FavoriteDeleted event = FavoriteDeleted.of(request.getUserId(), request.getFavoriteChirpId());
+            return ctx.thenPersist(event, (evt) -> ctx.reply(Done.getInstance()));
+        }
+    );
+    // FavoriteDeleted イベントが起きたときは状態からfavoriteId を削除
+    b.setEventHandler(FavoriteDeleted.class,
+        (evt) -> state().deleteFavoriteId(evt.getFavoriteId())
+    );
+
+    return b.build();
 }
 ```
+* TODO: Event Source の図示
 
 ---
 
 ## 確認
 
-* お気に入りが永続化できている
+* お気に入りが解除できるようになっている
+* お気に入りされている数が減るのにタイムラグがある
 
 ---
 
-## TODO
+## まとめ
 
-.list-no-marker[
-* .with-checkbox-on[アプリの概要を知る]
-* .with-checkbox-on[アプリのAPIを呼んでみる]
-* .with-checkbox-on[CQRS Write-Side の実装]
-* .with-checkbox-off[CQRS Read-Side の実装]
-* .with-checkbox-off[CircuitBreaker の実装]
-]
+* 非同期処理でレイテンシを低くする
+* Event Sourcing + CQRS で永続化機能に高いスケーラビリティと耐障害性を実現する
+    * 結果整合性を意識した設計にする
 
 ---
+
+## 参考資料
+
+* [マイクロサービスアーキテクチャ (O'Reilly)](https://www.oreilly.co.jp/books/9784873117607/)
+* [Reactive Design Patterns (Manning)](https://www.manning.com/books/reactive-design-patterns)
+* [Developing Reactive Microservices (O’Reilly)](http://www.oreilly.com/programming/free/developing-reactive-microservices-signup.html)
+
+???
+'
+---
+
+## 広告
+
+* コンサルティングサービス
+
+---
+
 class: center, middle
 
-## Hands-On STEP 3
-# CQRS Read-Side の実装
-
----
-
-## CQRS Read-Side の実装
-
-1. FavoriteEventProcessor を実装する
-2. FavoriteServiceImpl からクエリする
-
-## 確認
-
-* お気に入りのカウントが見えるようになる
-* ただし、若干のタイムラグがある
-
----
-
-## TODO
-
-.list-no-marker[
-* .with-checkbox-on[アプリの概要を知る]
-* .with-checkbox-on[アプリのAPIを呼んでみる]
-* .with-checkbox-on[Write-side の実装]
-* .with-checkbox-on[Read-side の実装]
-* .with-checkbox-off[CircuitBreaker の実装]
-]
-
----
-class: center, middle
-
-## Hands-On STEP 4
-# CircuitBreaker の実装
+## おまけ
+# CircuitBreaker の紹介
 
 ---
 
@@ -576,35 +685,12 @@ class: center, middle
 
 ---
 
-### Hands-on 4 - CircitBreaker の実装
+### CircitBreaker の分け方
 
 1. FavoriteService に CircitBreaker を定義する
 
 ※ CircitBreaker は呼び出し側の制御。
 Lagom外からHTTPなどでリクエストを投げる場合は注意
-
----
-
-## まとめ
-
-* マイクロサービスアーキテクチャで犠牲になること
-  * 結果整合性
-    * サービスをまたがるトランザクションを作らない
-    * サービスをまたがる場合は Saga を検討する
-
----
-
-## 参考資料
-
-* [マイクロサービスアーキテクチャ]()
-
-???
-
-TODO: なぜ全部非同期なのか？
-
----
-
-## 広告
 
 </textarea>
   <style>

@@ -1,4 +1,10 @@
-.list-style-svg (@url, @size, @maker-gap: 0.4em) {
+.list-style-svg (@url, @size, middle) {
+  .list-style-svg(@url, @size);
+}
+.list-style-svg (@url, @size, bottom) {
+  .list-style-svg(@url, @size, -0.2em);
+}
+.list-style-svg (@url, @size, @bottom-position: (1em - @size - 0.1em), @marker-gap: 0.5em) {
 
   list-style: none;
   padding-left: calc(@size + @marker-gap);
@@ -11,9 +17,10 @@
     height: @size;
     background-repeat: no-repeat;
     background-image: url(@url);
+    background-position: center;
     position: relative;
     margin-left: -@size;
-    bottom: -0.1em;
+    bottom: @bottom-position;
     left: -@marker-gap;
   }
 }

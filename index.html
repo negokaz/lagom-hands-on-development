@@ -642,15 +642,16 @@ default Descriptor descriptor() {
 ```
 
 * `pathCall` の第一引数が API のURLになる
-    * ⇒ http://localhost:9000/api/favorites/HOGE/delete
+    * URL の `:userId` はパラメータ
+    * 例) http://localhost:9000/api/favorites/HOGE/delete
 
 ???
 
-this::addFavorite は **メソッド参照**
+this::deleteFavorite は **メソッド参照**
 
 ---
 
-## APIの実装を確認
+## APIの定義を確認
 ```java
 * ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
 
@@ -669,16 +670,17 @@ default Descriptor descriptor() {
 
 ---
 
-## APIの実装を確認
+## コマンドの送信を実装
 
 .small[[FavoriteServiceImpl.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteServiceImpl.java)]
 ```java
 @Override
 public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
     return request -> {
-        CompletionStage<Done> deleting =
-                favoriteEntityRef(userId).ask(DeleteFavorite.of(userId, request.getFavoriteId()));
-        return deleting.thenApply(ack -> NotUsed.getInstance());
+        // TODO: STEP3 - DeleteFavorite(コマンド)をFavoriteEntityに送る
+*       CompletionStage<Done> adding =
+*               favoriteEntityRef(userId).ask(DeleteFavorite.of(userId, request.getFavoriteId()));
+*       return adding.thenApply(ack -> NotUsed.getInstance());
     };
 }
 ```
@@ -692,15 +694,15 @@ CompletionStage: CompletableFuture のスーパークラスで、未来のある
 
 ---
 
-## CQRS Write-Side の実装
+## イベントの永続化を実装
 
 .with-checkbox-off[FavoriteEntity を実装する]
 
 * Entity とは、サービスの状態を持つもの
 * コマンドを受け取り、自身の状態を更新し、結果を返す
 * 状態はDBに永続化する
-* コマンドとレスポンスは既に用意してあります
-    * [FavoriteCommand.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteCommand.java)
+* イベントは既に用意してあります
+    * [FavoriteEvent.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEvent.java)
 
 ???
 
@@ -708,35 +710,41 @@ DDDにおけるEntityと一致します。
 
 ---
 
-## CQRS Write-Side の実装
-
-
-```java
-/**
- * 生成直後の Entity の"振る舞い"を定義するメソッド。
- * Entity の状態などによって、違う振る舞いに変更することもできる。
- *
- * @param snapshotState {@link FavoriteState} のスナップショット
- *                      Entity の生成直後は empty。
- *                      Entity の状態を復元する時間を短くするために、
- *                      一定数のイベントが来たタイミングでそのときの状態が永続化される。
- *                      http://www.lagomframework.com/documentation/1.0.x/java/PersistentEntity.html#snapshots
- */
-@Override
-public Behavior `initialBehavior`(Optional<FavoriteState> `snapshotState`) {
-```
-
----
-
-## CQRS Write-Side の実装
+## イベントの永続化を実装
 
 ```java
 public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
     BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
-
+    //////////////////////////////////////////////
     /*
-     * DeleteFavorite が送られてくる
-     *  → FavoriteDeleted イベントを作成
+     * TODO: STEP3 - DeleteFavorite(コマンド)が送られてくる
+     *  → FavoriteDeleted(イベント)を作成
+     *  → イベントを永続化
+     *  → Done を送り返す
+     */
+*   b.setCommandHandler(DeleteFavorite.class,
+*       (request, ctx) -> {
+*           FavoriteDeleted event = FavoriteDeleted.of(request.getUserId(), request.getFavoriteChirpId());
+*           return ctx.thenPersist(event, (evt) -> ctx.reply(Done.getInstance()));
+*       }
+*   );
+    //////////////////////////////////////////////
+    return b.build();
+}
+```
+
+---
+
+
+## イベントの永続化を実装
+
+```java
+public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
+    BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
+    //////////////////////////////////////////////
+    /*
+     * TODO: STEP3 - DeleteFavorite(コマンド)が送られてくる
+     *  → FavoriteDeleted(イベント)を作成
      *  → イベントを永続化
      *  → Done を送り返す
      */
@@ -746,15 +754,14 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
             return ctx.thenPersist(event, (evt) -> ctx.reply(Done.getInstance()));
         }
     );
-    // FavoriteDeleted イベントが起きたときは状態からfavoriteId を削除
-    b.setEventHandler(FavoriteDeleted.class,
-        (evt) -> state().deleteFavoriteId(evt.getFavoriteId())
-    );
-
+    // TODO: STEP3 - FavoriteDeleted(イベント)が起きたときは状態からfavoriteId を削除
+*   b.setEventHandler(FavoriteDeleted.class,
+*       (evt) -> state().deleteFavoriteId(evt.getFavoriteId())
+*   );
+    //////////////////////////////////////////////
     return b.build();
 }
 ```
-* TODO: Event Source の図示
 
 ---
 

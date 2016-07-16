@@ -8,8 +8,10 @@
 </head>
 <body>
 <div class="remote-controller">
-  <input type="checkbox" id="enable-sync" class="subscribe-control" unchecked />
-  <label for="enable-sync" class="subscribe-control">スライドを同期</label>
+  <div class="remote-controller-scaler">
+    <input type="checkbox" id="enable-sync" class="subscribe-control" unchecked />
+    <label for="enable-sync" class="subscribe-control">講演者と同期</label>
+  </div>
 </div>
 <textarea id="source">
 
@@ -201,11 +203,14 @@ Twitter ライクなアプリケーション
 class: center, middle
 
 ## Hands-On STEP 1
-# はじめての Chirper
+# 作るものを理解する
+はじめての Chirper
 
 ---
 
 ## 起動
+
+* ターミナルを開いて↓を実行
 
 ```bash
 $ cd lagom-hands-on-development
@@ -223,6 +228,10 @@ $ bin/activator runAll
 [.with-array-to-bottom[.height-5.with-cursor[![](resources/img/chirper-signup.svg)]]](http://localhost:9000/signup)
 
 .height-8.with-bottom-cursor[![](resources/img/chirper-signup-submit.svg)]
+]
+
+.footnote[
+.bold[※ 後で使うので、ユーザーIDを<br>控えておいてください。]
 ]
 ---
 
@@ -244,7 +253,7 @@ $ bin/activator runAll
 .height-6[![](resources/img/chirper-favorite-implemented.svg)]
 ]
 
-* UIと一部APIは実装済み
+* UIとAPIの一部は実装済み
 * お気に入り解除しても開きなおすとお気に入りが復活
 * お気に入りされてもカウントが常に 0
 
@@ -299,6 +308,7 @@ class: center, middle
 
 ## Hands-On STEP 2
 # サービスのAPIを呼んでみる
+Lagom との話し方
 
 ---
 
@@ -310,7 +320,7 @@ class: center, middle
 
 ---
 
-## ブラウザからAPIを呼んでみる
+## HTTPでAPIを呼んでみる
 
 [Advanced REST Client を起動](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/)
 
@@ -318,7 +328,72 @@ class: center, middle
 ![](resources/img/chrome-app-launch.png)
 ]
 
-### HTTP
+.height-10.center.with-border-frame[
+![](resources/img/advanced-rest-client.png)
+]
+
+---
+
+### GET - Request
+
+.left-column[
+* Request URL:
+    ```
+    http://localhost:9000/api/users/ユーザーID
+    ```
+* **GET** を選択
+* .with-cursor[![](resources/img/advanced-rest-client-send.png)]
+]
+
+.right-column[
+.height-8[![](resources/img/request-get.png)]
+]
+
+---
+
+### GET - Response
+
+![](resources/img/response-get.png)
+
+---
+
+### POST - Request
+
+.left-column[
+* Request URL:
+    ```
+    http://localhost:9000/api/chirps/live/ユーザーID
+    ```
+* **POST** を選択
+* Raw Headers:
+    ```
+    Content-Type: application/json
+    ```
+* Raw Payload:
+    ```
+    {"userId": "ユーザー名", "message": "test"}
+    ```
+    
+* .with-cursor[![](resources/img/advanced-rest-client-send.png)]
+]
+
+.right-column[
+.height-10[![](resources/img/request-post.png)]
+]
+
+---
+
+### POST - Response
+
+![](resources/img/response-post.png)
+
+---
+
+## Lagom の内部APIで呼んでみる
+
+* WIP の実装をします
+
+.center[![](resources/img/services-read2.svg)]
 
 ---
 
@@ -450,27 +525,72 @@ class: center, middle
 class: middle, center
 
 ## Hands-On STEP 3
-# お気に入り解除の永続化
+# お気に入り"解除"の永続化
+事実はずっと忘れない
 
 ---
 
 ## Lagom における永続化
+
+* 高い可用性とスケーラビリティを実現するため<br>
+  .strong[Event Sourcing] と .strong[CQRS] による永続化のしくみを備えている
 
 ---
 
 ## Event Sourcing
 
 * システムの中で起きた**イベント**を永続化する
+* イベントをデータストアに INSERT していく
+* ロック不要
+    * 高いスループットを実現できる
 * イベントは不変(immutable)
     * キャッシュ、コピー、共有が容易にできる
-    * ⇒ スケールしやすくなる
+        * スケールしやすい
+        * 耐障害性を高められる
+
+---
+
+## Event Sourcing
+
+* システムの中で起きた**イベント**を永続化する
+.float-top-40[
+![](resources/img/event-sourcing.1.svg)
+]
+---
+
+## Event Sourcing
+
+* システムの中で起きた**イベント**を永続化する
+.float-top-40[
+![](resources/img/event-sourcing.2.svg)
+]
+---
+
+## Event Sourcing
+
+* システムの中で起きた**イベント**を永続化する
+.float-top-40[
+![](resources/img/event-sourcing.3.svg)
+]
+---
+
+## Event Sourcing
+
+* システムの中で起きた**イベント**を永続化する
+.float-top-40[
+![](resources/img/event-sourcing.4.svg)
+]
+---
+
+## Event Sourcing
+
 * デメリット
   * データの集計にコストがかかる
   * ⇒ CQRSで解決できる
 
 ---
 
-## CQRS (1/2)
+## CQRS
 
 * .bold[C]ommand and .bold[Q]uery .bold[R]esponsibility .bold[S]egregation
     コマンドクエリ責務分離
@@ -482,7 +602,15 @@ class: middle, center
 
 ---
 
-## CQRS (2/2)
+## CQRS
+
+.center[
+![](resources/img/es-and-cqrs.svg)
+]
+
+---
+
+## CQRS
 
 * デメリット
     * 書き込み・読み込みで完全な一貫性を保てなくなる
@@ -639,7 +767,7 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 ## まとめ
 
 * 非同期処理でレイテンシを低くする
-* Event Sourcing + CQRS で永続化機能に高いスケーラビリティと耐障害性を実現する
+* Event Sourcing + CQRS で永続化機能に<br>高いスケーラビリティと耐障害性を持たせる
     * 結果整合性を意識した設計にする
 
 ---
@@ -692,14 +820,17 @@ class: center, middle
 ※ CircitBreaker は呼び出し側の制御。
 Lagom外からHTTPなどでリクエストを投げる場合は注意
 
+---
+
 </textarea>
   <style>
     .remote-controller {
       position: fixed;
+      left: 0;
       bottom: 0;
       z-index: 999;
-      background: rgba(255, 255, 255, 0.70);
-      border: 0.05rem solid rgb(255, 255, 255);
+      background: rgba(255, 255, 255, 0.50);
+      border: 0.05rem solid rgba(255, 255, 255, 0.80);
       padding: 0 0.5rem 0.3rem 0;
     }
     .remote-controller label {
@@ -707,8 +838,8 @@ Lagom外からHTTPなどでリクエストを投げる場合は注意
       color: rgba(0, 0, 0, 0.50);
     }
     .remote-controller input[type="checkbox"] {
-      width:  0.5rem;
-      height: 0.5rem;
+      max-width:  0.5rem;
+      max-height: 0.5rem;
     }
     @media print {
       .remote-controller {

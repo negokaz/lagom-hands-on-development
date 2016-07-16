@@ -109,9 +109,9 @@ public class ChirpServiceImpl implements ChirpService {
       return recentChirpSource.thenApply(source -> { // source: つぶやきのストリーム
 
         return source.mapAsync(2, chirp -> {
-          // TODO: STEP2 - お気に入りされた数を取得
+          // STEP2 - お気に入りされた数を取得
           CompletionStage<Integer> favorCount =
-                  CompletableFuture.completedFuture(0);
+                  favoriteService.getFavorCount(chirp.getUuid()).invoke();
 
           CompletionStage<Chirp> chirpAppliedFavorite =
             favorites.thenCompose(favs ->

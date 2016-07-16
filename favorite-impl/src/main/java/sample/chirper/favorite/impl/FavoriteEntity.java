@@ -44,13 +44,21 @@ public class FavoriteEntity extends PersistentEntity<FavoriteCommand, FavoriteEv
         );
 
         /*
-         * TODO: STEP3 - DeleteFavorite(コマンド)が送られてくる
+         * STEP3 - DeleteFavorite(コマンド)が送られてくる
          *  → FavoriteDeleted(イベント)を作成
          *  → イベントを永続化
          *  → Done を送り返す
          */
-
-        // TODO: STEP3 - FavoriteDeleted(イベント)が起きたときは状態から chirpId を削除
+        b.setCommandHandler(DeleteFavorite.class,
+            (request, ctx) -> {
+                FavoriteDeleted event = FavoriteDeleted.of(request.getUserId(), request.getChirpId());
+                return ctx.thenPersist(event, (evt) -> ctx.reply(Done.getInstance()));
+            }
+        );
+        // STEP3 - FavoriteDeleted(イベント)が起きたときは状態から chirpId を削除
+        b.setEventHandler(FavoriteDeleted.class,
+            (evt) -> state().deleteChirpId(evt.getChirpId())
+        );
 
         /*
          * GetFavorites(コマンド)が送られてくる

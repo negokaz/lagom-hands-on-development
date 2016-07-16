@@ -52,8 +52,10 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
         return request -> {
-            // TODO: STEP3 - DeleteFavorite(コマンド)をFavoriteEntityに送る
-            return CompletableFuture.completedFuture(NotUsed.getInstance());
+            // STEP3 - DeleteFavorite(コマンド)をFavoriteEntityに送る
+            CompletionStage<Done> deleting =
+                    favoriteEntityRef(userId).ask(DeleteFavorite.of(userId, request.getChirpId()));
+            return deleting.thenApply(ack -> NotUsed.getInstance());
         };
     }
 

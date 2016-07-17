@@ -119,7 +119,7 @@ http://martinfowler.com/articles/microservices.html
 ## 今日やること
 
 * MSA向けフレームワーク .strong[Lagom] から、MSAにおけるアプリケーションの設計パターンを学ぶ
-
+* Lagom のコードに触れつつ見ていきます
 ---
 
 ## Lagom とは？
@@ -134,9 +134,7 @@ http://martinfowler.com/articles/microservices.html
 
 [Reactive Microservices Architecture (O’Reilly)](http://www.oreilly.com/programming/free/reactive-microservices-architecture.html)
 ]
-???
-https://www.lightbend.com/company/news/lagom-a-new-microservices-framework
-http://www.oreilly.com/programming/free/reactive-microservices-architecture.html
+
 ---
 
 ## Lagom が目指すもの
@@ -210,10 +208,11 @@ class: center, middle
 
 ## 起動
 
-* ターミナルを開いて↓を実行
+* 新しくターミナルを開いて↓を実行
 
 ```bash
 $ cd lagom-hands-on-development
+$ git checkout step1
 $ bin/activator runAll
 ....
 * [info] (Services started, use Ctrl+D to stop and go back to the console...) # 起動完了
@@ -245,9 +244,13 @@ $ bin/activator runAll
 
 .height-6[![](resources/img/chirper-timeline.png)]
 
+--
+
+* お気に入りを on/off したり、 画面を更新したりしてみてください
+
 ---
 
-## 現在の進捗
+## WIP - 現在の進捗
 
 .center[
 .height-6[![](resources/img/chirper-favorite-wip.png)]
@@ -271,13 +274,13 @@ $ bin/activator runAll
 
 ---
 
-## サービスの構成 (1/2)
+## サービスの構成
 
 .center[![](resources/img/services1.svg)]
 
 ---
 
-## サービスの構成 (2/2)
+## サービスの構成
 
 .center[![](resources/img/services2.svg)]
 
@@ -335,7 +338,7 @@ Lagom との話し方
 
 ---
 
-### GET - Request
+### GET - ユーザー情報の取得
 
 .left-column[
 * Request URL:
@@ -358,7 +361,7 @@ Lagom との話し方
 
 ---
 
-### POST - Request
+### POST - つぶやきの投稿
 
 .left-column[
 * Request URL:
@@ -392,7 +395,7 @@ Lagom との話し方
 
 ## Lagom の内部APIで呼んでみる
 
-* WIP の実装をします
+* WIP のところを実装します
 
 .center[![](resources/img/services-read2.svg)]
 
@@ -400,16 +403,16 @@ Lagom との話し方
 
 ## Lagom の内部APIで呼んでみる
 
+.with-code-annotation[
+`ChirpServiceImpl.java`
 ```java
   public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
           /////////////////////////////////////////
-          // TODO: 何行目？
           return recentChirpSource.thenApply(source -> {
             return source.mapAsync(2, chirp -> {
-
+              // TODO: STEP2 - DeleteFavorite(コマンド)をFavoriteEntityに送る
               CompletionStage<Integer> favorCount =
                       CompletableFuture.completedFuture(0);
-
               // つぶやきにお気に入りの情報を追加
               CompletionStage<Chirp> chirpAppliedFavorite =
                 favorites.thenCompose(favs ->
@@ -418,28 +421,28 @@ Lagom との話し方
                           ? chirp.withIsFavorite(true).withFavorCount(count)
                           : chirp.withFavorCount(count)
                 ));
-
               return chirpAppliedFavorite;
             });
           });
           /////////////////////////////////////////
 }
 ```
+]
 
 ---
 
 ## Lagom の内部APIで呼んでみる
 
+.with-code-annotation[
+`ChirpServiceImpl.java`
 ```java
   public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
           /////////////////////////////////////////
-          // TODO: 何行目？
           return recentChirpSource.thenApply(source -> {
             return source.mapAsync(2, chirp -> {
-
+              // TODO: STEP2 - DeleteFavorite(コマンド)をFavoriteEntityに送る
               CompletionStage<Integer> favorCount =
 *                     favoriteService.getFavorCount(chirp.getUuid()).invoke();
-
               // つぶやきにお気に入りの情報を追加
               CompletionStage<Chirp> chirpAppliedFavorite =
                 favorites.thenCompose(favs ->
@@ -448,55 +451,59 @@ Lagom との話し方
                           ? chirp.withIsFavorite(true).withFavorCount(count)
                           : chirp.withFavorCount(count)
                 ));
-
               return chirpAppliedFavorite;
             });
           });
           /////////////////////////////////////////
 }
+```
+]
+
+---
+
+## 実装が間に合わなかった場合
+
+下記のコマンドで回答をチェックアウトしてください
+```bash
+# lagom-hands-on-development に移動して実行してください
+$ git checkout step2
 ```
 
 ---
 
 ## 動きの確認
 
-* お気に入りされた数が確認できる
+* .with-checkbox-on[お気に入りされた数が確認できる]
+    * 5秒後ぐらいにリロードしてみてください
 
+.footnote[
+※ Lagom はホットリロードをサポートしているので アプリの再起動は不要です
+]
 ---
 
 ## Lagom の内部APIで呼んでみる
 
+.with-code-annotation[
+`ChirpServiceImpl.java`
 ```java
-  public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
-          /////////////////////////////////////////
-          // TODO: 何行目？
-          return recentChirpSource.thenApply(source -> {
-            return source.mapAsync(2, chirp -> {
-
+              // TODO: STEP2 - DeleteFavorite(コマンド)をFavoriteEntityに送る
               CompletionStage<Integer> favorCount =
 *                     favoriteService.getFavorCount(chirp.getUuid()).invoke();
-
-              // つぶやきにお気に入りの情報を追加
-              CompletionStage<Chirp> chirpAppliedFavorite =
-                favorites.thenCompose(favs ->
-                favorCount.thenApply(count ->
-                  favs.contains(chirp.getUuid())
-                          ? chirp.withIsFavorite(true).withFavorCount(count)
-                          : chirp.withFavorCount(count)
-                ));
-
-              return chirpAppliedFavorite;
-            });
-          });
-          /////////////////////////////////////////
-}
 ```
+]
 
-.float-bottom-10.glass-deep.small[
-* `favoriteService` は 別プロセスで動く FavoriteService の Proxy
+.small[
+* `favoriteService` は FavoriteService の Proxy
+    * Proxy が HTTP でリクエストする
 * `getFavorCount` はお気に入りされた数を取得するAPI
     * つぶやきのIDを渡す
-* `invoke` で結果の `CompletionStage<Integer>` が返ってくる
+* `invoke` ですぐに `CompletionStage<Integer>` が返ってくる
+    * 非同期処理の戻り値
+    * まだ決定していない「未来の値」を表す
+]
+
+.footnote[
+[Java SE 8 API - `CompletionStage<T>`](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html)
 ]
 
 ---
@@ -516,6 +523,7 @@ Lagom との話し方
 
 * もっと呼び出すAPIが増えたら？
     * レイテンシはより増大
+    * 呼び出し先のサービスでも同期処理してると…
 --
 
 * もっとリクエストが増えたら？
@@ -527,7 +535,7 @@ class: middle, center
 
 ## Hands-On STEP 3
 # お気に入り"解除"の永続化
-事実はずっと忘れない
+残すのは「今」ではなく「歴史」
 
 ---
 
@@ -621,15 +629,18 @@ class: middle, center
 
 ---
 
-## 機能のおさらい
+## Event Sourcing で実装してみる
+
+* WIP のところを実装をします
 
 .center[![](resources/img/services-write2.svg)]
 
 ---
 
-## APIの実装を確認
+## APIの定義を確認
 
-.small[[FavoriteService.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java)]
+.with-code-annotation[
+`FavoriteService.java`
 ```java
 ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
 
@@ -640,6 +651,7 @@ default Descriptor descriptor() {
     )
 }
 ```
+]
 
 * `pathCall` の第一引数が API のURLになる
     * URL の `:userId` はパラメータ
@@ -652,8 +664,10 @@ this::deleteFavorite は **メソッド参照**
 ---
 
 ## APIの定義を確認
+.with-code-annotation[
+`FavoriteService.java`
 ```java
-* ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
+*ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
 
 @Override
 default Descriptor descriptor() {
@@ -662,6 +676,8 @@ default Descriptor descriptor() {
     )
 }
 ```
+]
+
 * `ServiceCall` : APIの呼び出しを抽象化したもの
     * 第一型引数: Request Body の型
   .small[JSONから自動でデシリアライズされる]
@@ -672,21 +688,44 @@ default Descriptor descriptor() {
 
 ## コマンドの送信を実装
 
-.small[[FavoriteServiceImpl.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteServiceImpl.java)]
+.with-code-annotation[
+`FavoriteServiceImpl.java`
 ```java
 @Override
 public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
     return request -> {
         // TODO: STEP3 - DeleteFavorite(コマンド)をFavoriteEntityに送る
-*       CompletionStage<Done> adding =
-*               favoriteEntityRef(userId).ask(DeleteFavorite.of(userId, request.getFavoriteId()));
-*       return adding.thenApply(ack -> NotUsed.getInstance());
+        return CompletableFuture.completedFuture(NotUsed.getInstance());
     };
 }
 ```
+]
 
-* 「リクエスト.small[(FavoriteId)]を受け取って.small[(NotUsedの)][CompletionStage](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html)を返す」関数を返す
+* 「`FavoriteId` のリクエストを受けて `CompletionStage<NotUsed>` を返す」関数を返す
 * ややこしいが、あまり気にせず`->`の先で`request`を使った処理を書けば良い
+
+---
+
+## コマンドの送信を実装
+
+.with-code-annotation[
+`FavoriteServiceImpl.java`
+```java
+@Override
+public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
+    return request -> {
+        // TODO: STEP3 - DeleteFavorite(コマンド)をFavoriteEntityに送る
+*       DeleteFavorite command = DeleteFavorite.of(userId, request.getFavoriteId());
+*       CompletionStage<Done> deleting = favoriteEntityRef(userId).ask(command);
+*       return deleting.thenApply(ack -> NotUsed.getInstance());
+    };
+}
+```
+]
+
+* `DeleteFavorite`.small[(コマンド)]を Entity に `ask` する
+* Entity は `userId` ごとに存在している
+* `Done` が返って来たら `NotUsed` を返す
 
 ???
 
@@ -699,10 +738,10 @@ CompletionStage: CompletableFuture のスーパークラスで、未来のある
 .with-checkbox-off[FavoriteEntity を実装する]
 
 * Entity とは、サービスの状態を持つもの
-* コマンドを受け取り、自身の状態を更新し、結果を返す
-* 状態はDBに永続化する
-* イベントは既に用意してあります
-    * [FavoriteEvent.java](http://localhost:8888/app/lagom-hands-on-development/#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEvent.java)
+* コマンドを受け取り、処理を行う
+* コマンドからイベントを作り、イベントを永続化する
+* イベントが永続化できたら、自身の状態を更新する
+* 状態が失われたらイベントを**再生**して復元
 
 ???
 
@@ -712,6 +751,8 @@ DDDにおけるEntityと一致します。
 
 ## イベントの永続化を実装
 
+.with-code-annotation[
+`FavoriteEntity.java`
 ```java
 public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
     BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
@@ -732,15 +773,16 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
     return b.build();
 }
 ```
+]
 
 ---
 
 
 ## イベントの永続化を実装
 
+.with-code-annotation[
+`FavoriteEntity.java`
 ```java
-public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
-    BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
     //////////////////////////////////////////////
     /*
      * TODO: STEP3 - DeleteFavorite(コマンド)が送られてくる
@@ -759,16 +801,26 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 *       (evt) -> state().deleteFavoriteId(evt.getFavoriteId())
 *   );
     //////////////////////////////////////////////
-    return b.build();
-}
+```
+]
+
+---
+
+## 実装が間に合わなかった場合
+
+下記のコマンドで回答をチェックアウトしてください
+```bash
+# lagom-hands-on-development に移動して実行してください
+$ git checkout step3
 ```
 
 ---
 
-## 確認
+## 動きの確認
 
-* お気に入りが解除できるようになっている
-* お気に入りされている数が減るのにタイムラグがある
+* .with-checkbox-on[お気に入りが解除できるようになっている]
+* .with-checkbox-on[お気に入りの数が変化するのにタイムラグがある]
+.therefore[Query-Side で集計しているため]
 
 ---
 
@@ -790,9 +842,20 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 '
 ---
 
-## 広告
+## TIS㈱ リアクティブ・システム<br>コンサルティングサービス
 
-* コンサルティングサービス
+* Reactive Microservices Architecture
+* Akka / Play / Scala
+    * POC
+    * 設計レビュー
+    * コードレビュー
+    * システム構築
+
+.footnote[
+https://www.tis.jp/service_solution/goreactive/
+
+TIS は Lightbend 社の認定コンサルティングパートナーです
+]
 
 ---
 
@@ -805,13 +868,14 @@ class: center, middle
 
 ## CircuitBreaker とは？
 
-* Open・Close・Half-Open の状態をとる
-* 障害を波及させない
-* リクエスト爆発を起こさない
+.small[
+* 外部サービスに障害が起きているとき、すぐエラーの応答を返す仕組み
+    * 障害時のリトライによるネットワーク帯域の無駄遣いが減る
+    * レイテンシを低く抑えられる
+* Close・Open・Half-Open の状態をとる
+]
 
----
-
-.center.height-7[
+.center.height-6[
 ![](http://www.lagomframework.com/documentation/1.0.x/java/resources/guide/services/circuit-breaker-states.png)
 ]
 
@@ -821,14 +885,38 @@ class: center, middle
 
 ---
 
-### CircitBreaker の分け方
+## CircuitBreaker のしくみ
 
-1. FavoriteService に CircitBreaker を定義する
+.center.height-6[
+![](http://www.lagomframework.com/documentation/1.0.x/java/resources/guide/services/circuit-breaker-states.png)
+]
 
-※ CircitBreaker は呼び出し側の制御。
-Lagom外からHTTPなどでリクエストを投げる場合は注意
+.small[
+* **Close**: 外部サービスへリクエストする
+* **Open**: すぐにエラーを返す
+* **Half-Open**: リクエストを試す
+    * Open から一定時間で切り替わる
+    * リクエストが成功したら Close に戻る
+]
+
+.footnote[
+引用: [Lagom #Consuming services](http://www.lagomframework.com/documentation/1.0.x/java/ServiceClients.html)
+]
 
 ---
+
+### Lagom での CircitBreaker
+
+* 標準で備えていて、デフォルトで有効
+* 外部へのリクエストは CircitBreaker を通じて行う
+
+※ CircitBreaker は呼び出し側の制御
+Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
+
+---
+class: middle, center
+
+# Thank you!
 
 </textarea>
   <style>

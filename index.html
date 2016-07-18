@@ -44,16 +44,14 @@ background-image: url("resources/img/title-background.jpg")
 * TIS株式会社 生産技術R＆D室
 * Reactive System に関する技術検証・コンサル
     * Lightbend Reactive Platform
-        * Akka / Play framework / Scala
+        * Scala / Akka / Play framework
 
 .with-twitter-icon[[@negokaz](https://twitter.com/negokaz)] .with-github-icon[[negokaz](https://github.com/negokaz)]
 
 ???
 
-* Reactive Platform の検証
-    * Reactive System: 高レスポンス、耐障害性があり、スケーラブル なシステム
-    * Typesafe がメインで作っている Reactive System を実現するためのフレームワークやライブラリ
-    * SI でどのようにすれば活用できるか？
+* Reactive System の推進をミッションとしていて、Lightbend Reactive Platform つまり
+Scala や Akka、Play といった技術の検証やコンサルをおこなっています。
 
 ---
 
@@ -66,14 +64,15 @@ background-image: url("resources/img/title-background.jpg")
 
 ???
 
-In short, the microservice architectural style is an approach to developing
-a single application as a suite of small services, each running in its own process
-and communicating with lightweight mechanisms, often an HTTP resource API.
-These services are built around business capabilities and
-independently deployable by fully automated deployment machinery.
-There is a bare minimum of centralized management of these services,
-which may be written in different programming languages and use different data storage technologies.
-http://martinfowler.com/articles/microservices.html
+* さて、今回のテーマはマイクロサービスアーキテクチャということなんですが、
+マイクロサービスアーキテクチャってなんなんでしょうか？
+
+マイクロサービスアーキテクチャは ThoughtWorks社の Martin Fowler によって提唱された言葉です。
+ざっくり言うと、「小さいサービスを組み合わせて 一つのアプリケーションを構築するスタイルのこと」です。
+1つのシステムを小さいサービスに分割して、それぞれを疎結合にすることによって、様々な利点を得ることができます。
+マイクロサービスアーキテクチャって言うのは疲れるので、以降は MSA と略します。
+
+では、その MSA の利点とはなんでしょうか？
 
 ---
 
@@ -84,6 +83,17 @@ http://martinfowler.com/articles/microservices.html
 * デプロイの影響範囲を小さくできる
   * 新機能や修正を迅速にリリースできる
 
+???
+
+まず、サービスごとに異なる技術が使えるという利点があります。
+これにより、サービスの特性に合わせた技術を採用できるようになります。
+
+デプロイの影響範囲を小さくできるという利点もあります。
+モノリシックな一枚岩のシステムでは、リリースでシステム全体が影響を受けるので、
+リスクがとても大きくなってしまいます。
+MSAではその影響範囲を小さくできるので、より低いリスクでリリースができるようになります。
+そうなると、修正を入れやすくなるので、新機能などをより早くリリースできるようになります。
+
 ---
 
 ## MSAの利点 (2/2)
@@ -93,6 +103,10 @@ http://martinfowler.com/articles/microservices.html
     * すぐに障害から回復できれば ユーザーからは何事も無かったかのように見える
 * サービスごとにスケールできる
   * リソースの無駄が少なくなるためコスト効率が良い
+
+???
+
+
 
 ---
 
@@ -106,6 +120,10 @@ http://martinfowler.com/articles/microservices.html
 * セキュリティ
 * ...etc
 
+???
+
+MSAのトピックスはいろいろありますが、今日は
+
 ---
 
 ## 今日やること・やらないこと
@@ -118,12 +136,20 @@ http://martinfowler.com/articles/microservices.html
 * ~~セキュリティ~~
 * ~~...etc~~
 
+???
+
+各サービスのアプリ層の設計についての話をします
+
 ---
 
 ## 今日やること
 
 * MSA向けフレームワーク .strong[Lagom] から、MSAにおけるアプリケーションの設計パターンを知る
 * Lagom に触れつつ見ていきます
+
+???
+
+今日は
 
 ---
 
@@ -141,6 +167,10 @@ http://martinfowler.com/articles/microservices.html
 
 [Reactive Microservices Architecture (O’Reilly)](http://www.oreilly.com/programming/free/reactive-microservices-architecture.html)
 ]
+
+???
+
+Lagom とは
 
 ---
 
@@ -210,6 +240,9 @@ class: center, middle
 ## Hands-On STEP 1
 # 作るものを理解する
 はじめての Chirper
+
+???
+**【0:10】**
 
 ---
 
@@ -323,6 +356,9 @@ class: center, middle
 ## Hands-On STEP 2
 # サービスのAPIを呼んでみる
 Lagom との話し方
+
+???
+**【0:25】**
 
 ---
 
@@ -488,6 +524,9 @@ Lagom との話し方
 ※ Lagom はホットリロードをサポートしているので アプリの再起動は不要です
 ]
 
+???
+【5分】
+
 ---
 
 ## 実装が間に合わなかった場合
@@ -563,6 +602,10 @@ class: middle, center
 ## Hands-On STEP 3
 # お気に入り"解除"の永続化
 残すのは「今」ではなく「歴史」
+
+???
+
+**【0:55】**
 
 ---
 
@@ -893,6 +936,9 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 * .with-checkbox-on[お気に入りの数が変化するのにタイムラグがある]
 .therefore[Query-Side で集計しているため]
 
+???
+【10分】
+
 ---
 
 ## 実装が間に合わなかった場合
@@ -941,6 +987,15 @@ https://www.tis.jp/service_solution/goreactive/
 
 TIS は Lightbend 社の認定コンサルティングパートナーです
 ]
+
+---
+class: middle, center
+
+# Thank you!
+
+???
+
+90/76
 
 ---
 
@@ -998,10 +1053,6 @@ class: center, middle
 ※ CircitBreaker は呼び出し側の制御
 Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
 
----
-class: middle, center
-
-# Thank you!
 
 </textarea>
   <style>

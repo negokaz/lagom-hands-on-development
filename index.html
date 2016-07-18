@@ -17,7 +17,7 @@
 
 ## 準備
 
-* ブラウザでスタートページにアクセス
+* ブラウザでスタートページ(下記)にアクセス
 * 「ハンズオンを始める」に従って準備してください
 
 .big[[bit.ly/start-lagom-hands-on](http://bit.ly/start-lagom-hands-on)]
@@ -29,6 +29,8 @@ background-image: url("resources/img/title-background.jpg")
 .glass[
 # 変わりゆく要求に備えよ！<br>システムアーキテクチャの新常識<br>「マイクロサービス」<br>を作って体験しよう！
 ]
+
+???
 
 .footnote[
 .height-4[![](http://2016.techfesta.jp/assets/img/toplogo.png)]
@@ -59,7 +61,7 @@ background-image: url("resources/img/title-background.jpg")
 
 * 2014年3月に ThoughtWorks社 の Martin Fowler によって提唱された
 * 小さいサービスを組み合わせて 一つのアプリケーションを構築するスタイルのこと
-* サービス同士を疎結合にすることにより 様々な利点が得られる
+* サービス同士を疎結合にすることにより .strong[様々な利点]が得られる
 * (長いので以降は**MSA**と略します)
 
 ???
@@ -96,37 +98,42 @@ http://martinfowler.com/articles/microservices.html
 
 ## MSAのトピックス
 
-* アプリケーション
-* インフラストラクチャ
+* アプリ層の設計
+* インフラ層の設計
 * ドメイン駆動設計
 * (人の)組織
 * システム運用
 * セキュリティ
+* ...etc
 
 ---
 
 ## 今日やること・やらないこと
 
-* .strong[アプリケーション]
-* ~~インフラストラクチャ~~
+* .strong[アプリ層の設計]
+* ~~インフラ層の設計~~
 * ~~ドメイン駆動設計~~
 * ~~(人の)組織~~
 * ~~システム運用~~
 * ~~セキュリティ~~
+* ~~...etc~~
 
 ---
 
 ## 今日やること
 
-* MSA向けフレームワーク .strong[Lagom] から、MSAにおけるアプリケーションの設計パターンを学ぶ
-* Lagom のコードに触れつつ見ていきます
+* MSA向けフレームワーク .strong[Lagom] から、MSAにおけるアプリケーションの設計パターンを知る
+* Lagom に触れつつ見ていきます
+
 ---
 
 ## Lagom とは？
 
+.height-3.center[![](resources/img/lagom_logo.svg)]
+
 * Lightbend社が3月にリリースしたMSA向けフレームワーク
 * 提供されている内部APIは Java
-* コアコンセプトは **Reactive** Microservices Architecture
+* コンセプトは **.strong[Reactive] Microservices Architecture**
     * 大規模なシステムがターゲット
 
 .footnote[
@@ -157,11 +164,11 @@ http://martinfowler.com/articles/microservices.html
 
 ## Lagom の特徴的な設計ポリシー
 
-* サービス内部で使うAPIは全て非同期API
+* サービス内部で使うAPIは全て**非同期API**
 * 分散型の永続化機構
-  * Event Sourcing
-  * CQRS
-* 外部APIの呼び出しは CircuitBreaker がデフォルトで有効
+  * **Event Sourcing**
+  * **CQRS**
+* 外部APIの呼び出しは **CircuitBreaker** がデフォルトで有効
 
 .footnote[
 [Lagom #Lagom design philosophy](http://www.lagomframework.com/documentation/1.0.x/java/LagomDesignPhilosophy.html)
@@ -210,6 +217,8 @@ class: center, middle
 
 * 新しくターミナルを開いて↓を実行
 
+.with-code-annotation[
+`Terminal`
 ```bash
 $ cd lagom-hands-on-development
 $ git checkout step1
@@ -217,6 +226,7 @@ $ bin/activator runAll
 ....
 * [info] (Services started, use Ctrl+D to stop and go back to the console...) # 起動完了
 ```
+]
 
 ⇒ 起動後、Chromeで [http://localhost:9000](http://localhost:9000) にアクセス
 
@@ -403,6 +413,14 @@ Lagom との話し方
 
 ## Lagom の内部APIで呼んでみる
 
+* .with-checkbox-off[ChirpServiceImpl で Favorite の API を呼び出す]
+
+.center[![](resources/img/services-read2.svg)]
+
+---
+
+## Lagom の内部APIで呼んでみる
+
 .with-code-annotation[
 `ChirpServiceImpl.java`
 ```java
@@ -461,16 +479,6 @@ Lagom との話し方
 
 ---
 
-## 実装が間に合わなかった場合
-
-下記のコマンドで回答をチェックアウトしてください
-```bash
-# lagom-hands-on-development に移動して実行してください
-$ git checkout step2
-```
-
----
-
 ## 動きの確認
 
 * .with-checkbox-on[お気に入りされた数が確認できる]
@@ -479,6 +487,21 @@ $ git checkout step2
 .footnote[
 ※ Lagom はホットリロードをサポートしているので アプリの再起動は不要です
 ]
+
+---
+
+## 実装が間に合わなかった場合
+
+下記のコマンドで回答をチェックアウトしてください
+
+.with-code-annotation[
+`Terminal`
+```bash
+# lagom-hands-on-development に移動して実行してください
+$ git checkout step2
+```
+]
+
 ---
 
 ## コードの解説
@@ -529,6 +552,10 @@ $ git checkout step2
 * もっとリクエストが増えたら？
     * CPUに余裕があるのにメモリが枯渇
     * いわゆる C10K 問題
+
+???
+
+* ブロックする呼び出しによってスレッドが専有される
 
 ---
 class: middle, center
@@ -637,6 +664,16 @@ class: middle, center
 
 ---
 
+## Event Sourcing で実装してみる
+
+* .with-checkbox-off[FavoriteService でAPIの定義を確認]
+* .with-checkbox-off[FavoriteServiceImpl にコマンドの送信を実装]
+* .with-checkbox-off[FavoriteEntity にイベントの永続化を実装]
+
+.height-10.center[![](resources/img/services-write2.svg)]
+
+---
+
 ## APIの定義を確認
 
 .with-code-annotation[
@@ -723,8 +760,8 @@ public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
 ```
 ]
 
-* `DeleteFavorite`.small[(コマンド)]を Entity に `ask` する
-* Entity は `userId` ごとに存在している
+* `DeleteFavorite`.small[(コマンド)]を FavoriteEntity に `ask` する
+* FavoriteEntity は `userId` ごとに存在している
 * `Done` が返って来たら `NotUsed` を返す
 
 ???
@@ -733,19 +770,63 @@ CompletionStage: CompletableFuture のスーパークラスで、未来のある
 
 ---
 
-## イベントの永続化を実装
+## Entity？
 
-.with-checkbox-off[FavoriteEntity を実装する]
-
-* Entity とは、サービスの状態を持つもの
+* サービスの状態を持つもの
 * コマンドを受け取り、処理を行う
 * コマンドからイベントを作り、イベントを永続化する
 * イベントが永続化できたら、自身の状態を更新する
-* 状態が失われたらイベントを**再生**して復元
+* 状態が失われたら**イベントを再生**して復元
 
 ???
 
 DDDにおけるEntityと一致します。
+
+---
+
+## イベントの永続化を実装
+
+.with-code-annotation[
+`FavoriteEntity.java`
+```java
+public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
+    BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
+    //////////////////////////////////////////////
+    b.setCommandHandler(.....,
+      (.....) -> { ..... }
+    );
+    b.setEventHandler(.....,
+      (.....) -> { ..... }
+    );
+    //////////////////////////////////////////////
+    return b.build();
+}
+```
+]
+
+---
+
+## イベントの永続化を実装
+
+.with-code-annotation[
+`FavoriteEntity.java`
+```java
+public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
+    `BehaviorBuilder` b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
+    //////////////////////////////////////////////
+    b.`setCommandHandler`(.....,
+      (.....) -> { ..... }
+    );
+    b.`setEventHandler`(.....,
+      (.....) -> { ..... }
+    );
+    //////////////////////////////////////////////
+    return b.build();
+}
+```
+]
+
+* `BehaviorBuilder` に**コマンド**や**イベント**のハンドラ(関数)を登録する
 
 ---
 
@@ -806,21 +887,25 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 
 ---
 
-## 実装が間に合わなかった場合
-
-下記のコマンドで回答をチェックアウトしてください
-```bash
-# lagom-hands-on-development に移動して実行してください
-$ git checkout step3
-```
-
----
-
 ## 動きの確認
 
 * .with-checkbox-on[お気に入りが解除できるようになっている]
 * .with-checkbox-on[お気に入りの数が変化するのにタイムラグがある]
 .therefore[Query-Side で集計しているため]
+
+---
+
+## 実装が間に合わなかった場合
+
+回答は下記のコマンドでチェックアウトできます
+
+.with-code-annotation[
+`Terminal`
+```bash
+# lagom-hands-on-development に移動して実行してください
+$ git checkout step3
+```
+]
 
 ---
 

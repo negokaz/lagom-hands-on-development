@@ -68,3 +68,14 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
     ```
 
 * [チュートリアル](http://127.0.0.1:8888/app/lagom-hands-on-development/#tutorial/0) を確認し、スタッフの指示を待って下さい。
+
+### Activator UI が起動しない場合
+
+下記のようなメッセージがターミナルに表示されていますか？
+```
+This application is already running (Or delete ../lagom-hands-on-development/RUNNING_PID file).
+```
+表示されている場合は RUNNING_PID ファイルを削除してから再度 Activator UI を起動しなおしてください。
+```bash
+rm RUNNING_PID
+```

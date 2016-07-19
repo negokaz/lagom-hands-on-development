@@ -8,10 +8,8 @@
 </head>
 <body>
 <div class="remote-controller">
-  <div class="remote-controller-scaler">
-    <input type="checkbox" id="enable-sync" class="subscribe-control" unchecked />
-    <label for="enable-sync" class="subscribe-control">講演者と同期</label>
-  </div>
+  <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
+  <label for="enable-sync" class="subscribe-control">講演者と同期</label>
 </div>
 <textarea id="source">
 
@@ -1075,7 +1073,7 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
     }
     @media print {
       .remote-controller {
-        visibility: hidden;
+        display: none;
       }
     }
   </style>
@@ -1083,6 +1081,7 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
   <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
   <script src="resources/reconnecting-websocket.min.js"></script>
   <script src="resources/remark-remote.js"></script>
+  <script src="resources/js.cookie.js"></script>
   <script>
 
     var slideshow = remark.create({
@@ -1100,7 +1099,7 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
       };
       if (window.location.search && window.location.search == "?control=true") {
         // Controllers
-        $(".subscribe-control").hide();
+        $(".remote-controller").hide();
         var passcode = window.prompt("passcode?", "");
         if (passcode === null) {
           return;
@@ -1114,13 +1113,19 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
           return $enableSync.prop("checked");
         };
         $enableSync.click(function() {
-          if ($enableSync.prop("checked")) {
+          var syncEnabled = $enableSync.prop("checked");
+          if (syncEnabled) {
             following.sync();
           }
+          Cookies.set("syncEnabled", syncEnabled, { expires: 1 });
         });
         following.ondefiance = function() {
           $enableSync.prop("checked", false);
         };
+        var syncEnabled = Cookies.get("syncEnabled");
+        if (typeof syncEnabled !== "undefined") {
+          $enableSync.prop("checked", syncEnabled != "false");
+        }
       }
     });
   </script>

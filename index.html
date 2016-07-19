@@ -9,7 +9,7 @@
 <body>
 <div class="remote-controller">
   <label for="enable-sync" class="subscribe-control">
-    <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
+    <input type="checkbox" id="enable-sync" class="subscribe-control" unchecked />
     <span>講演者と同期</span>
   </label>
 </div>
@@ -39,7 +39,7 @@ background-image: url("resources/img/title-background.jpg")
 ???
 
 .footnote[
-.height-4[![](http://2016.techfesta.jp/assets/img/toplogo.png)]
+TODO: .height-4[![](http://2016.techfesta.jp/assets/img/toplogo.png)]
 ]
 
 ---
@@ -56,8 +56,8 @@ background-image: url("resources/img/title-background.jpg")
 
 ???
 
-* Reactive System の推進をミッションとしていて、Lightbend Reactive Platform つまり
-Scala や Akka、Play といった技術の検証やコンサルをおこなっています。
+私たちは Reactive System の推進をミッションとしていて、Lightbend Reactive Platform つまり
+Scala や Akka、Play といった技術の検証やコンサルを おこなっています。
 
 ---
 
@@ -70,13 +70,14 @@ Scala や Akka、Play といった技術の検証やコンサルをおこなっ�
 
 ???
 
-* さて、今回のテーマはマイクロサービスアーキテクチャということなんですが、
+さて、今回のテーマはマイクロサービスアーキテクチャということなんですが、
 マイクロサービスアーキテクチャってなんなんでしょうか？
 
 マイクロサービスアーキテクチャは ThoughtWorks社の Martin Fowler によって提唱された言葉です。
 ざっくり言うと、「小さいサービスを組み合わせて 一つのアプリケーションを構築するスタイルのこと」です。
 1つのシステムを小さいサービスに分割して、それぞれを疎結合にすることによって、様々な利点を得ることができます。
-マイクロサービスアーキテクチャって言うのは疲れるので、以降は MSA と略します。
+
+毎回マイクロサービスアーキテクチャって言うのは疲れるので、以降は MSA と略します。
 
 では、その MSA の利点とはなんでしょうか？
 
@@ -97,6 +98,7 @@ Scala や Akka、Play といった技術の検証やコンサルをおこなっ�
 デプロイの影響範囲を小さくできるという利点もあります。
 モノリシックな一枚岩のシステムでは、リリースでシステム全体が影響を受けるので、
 リスクがとても大きくなってしまいます。
+
 MSAではその影響範囲を小さくできるので、より低いリスクでリリースができるようになります。
 そうなると、修正を入れやすくなるので、新機能などをより早くリリースできるようになります。
 
@@ -112,7 +114,13 @@ MSAではその影響範囲を小さくできるので、より低いリスク�
 
 ???
 
+レジリエンスも利点としてあります。
+複数あるサービスの一部が止まってしまったとしても、一時的に一部の機能が使えなくなるだけで
+ブラウザでページを開いても何も表示されないといったことは起きません。
+障害が起きたサービスを復旧できれば、その機能を使っていないユーザーから見ると何事もなかったかのように見えます。
 
+また、サービスごとにスケールできるというのも利点です。
+モノリシックなアプリケーションだと、まるごと別のサーバーを用意する必要があり
 
 ---
 

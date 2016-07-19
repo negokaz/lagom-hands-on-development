@@ -1057,9 +1057,11 @@ body {
   padding: 0 !important;
 }
 .remark-notes {
+  word-break: break-all;
   font-size: 0.6rem;
 }
 .remark-notes-preview {
+  word-break: break-all;
   font-size: 0.6rem;
   opacity: 0.6;
 }

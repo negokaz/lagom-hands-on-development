@@ -27,12 +27,17 @@ body {
   padding: 0 !important;
 }
 
-.remark-notes {
+.remark-notes-common() {
+  word-break: break-all;
   font-size: 0.6rem;
 }
 
+.remark-notes {
+  .remark-notes-common;
+}
+
 .remark-notes-preview {
-  font-size: 0.6rem;
+  .remark-notes-common;
   opacity: 0.6;
 }
 

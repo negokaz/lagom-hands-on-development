@@ -675,7 +675,7 @@ class: middle, center
 * 書き込み側と読み込み側で
     * 異なるDB・データ構造が使える
     * 別々にスケールできるようになる
-    * ⇒ Write-Side にイベントソーシングを使い<br>Read-Side に集計しやすい形で永続化する
+    * ⇒ Command-Side にイベントソーシングを使い<br>Query-Side に集計しやすい形で永続化する
 
 ---
 
@@ -692,7 +692,7 @@ class: middle, center
 * デメリット
     * 書き込み・読み込みで完全な一貫性を保てなくなる
       * 十分な時間が経つと整合性がとれる (結果整合性)
-      * ⇒ 結果整合性があっても問題ないように
+      * ⇒ 一時的に一貫性が取れてなくても問題ないよう
       ビジネスやシステムを設計する
 
 ---
@@ -1121,6 +1121,7 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
         });
         following.ondefiance = function() {
           $enableSync.prop("checked", false);
+          Cookies.set("syncEnabled", false, { expires: 1 });
         };
         var syncEnabled = Cookies.get("syncEnabled");
         if (typeof syncEnabled !== "undefined") {

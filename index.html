@@ -36,11 +36,11 @@ background-image: url("resources/img/title-background.jpg")
 # 変わりゆく要求に備えよ！<br>システムアーキテクチャの新常識<br>「マイクロサービス」<br>を作って体験しよう！
 ]
 
-???
-
 .footnote[
 TODO: .height-4[![](http://2016.techfesta.jp/assets/img/toplogo.png)]
 ]
+
+???
 
 ---
 
@@ -156,14 +156,17 @@ MSAのトピックスはいろいろありますが、今日は
 
 ---
 
-## 今日やること
+## 今日持ち帰ってもらいたいこと
 
 * MSA向けフレームワーク .strong[Lagom] から、MSAにおけるアプリケーションの設計パターンを知る
-* Lagom に触れつつ見ていきます
 
 ???
 
-今日は
+今日は MSA向けフレームワーク **Lagom** から、MSAにおけるアプリケーションの設計パターンを知って帰ってもらいたいと思います。
+
+--
+
+.footnote[Lagom に触れつつ見ていきます]
 
 ---
 
@@ -803,6 +806,15 @@ public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
 * 「`FavoriteId` のリクエストを受けて `CompletionStage<NotUsed>` を返す」関数を返す
 * ややこしいが、あまり気にせず`->`の先で`request`を使った処理を書けば良い
 
+???
+
+お気に入りを削除する DeleteFavorite コマンドを FavoriteEntity に送信するコードを実装します。
+
+FavoriteService のインターフェイスで定義された deleteFavorite というメソッドを実装します。
+ここでは、ServiceCall の第一型引数にある FavoriteId を受けて、
+受けて NotUsed の CompletionStage を返す関数を定義します。
+ちょっとAPIがややこしいですが、あまり深く考えずに request の矢印の先にある括弧の中に処理を書けばよいです。
+
 ---
 
 ## コマンドの送信を実装
@@ -828,7 +840,13 @@ public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
 
 ???
 
-CompletionStage: CompletableFuture のスーパークラスで、未来のある時点で値になりうるものを表す
+書くコードはこんな感じです。
+
+DeleteFavorite というコマンドを作って、userId に紐づく favoriteEntityRef に対してコマンドを ask メソッドで送信します。
+EntityRef はここでは、Entity の実体へのプロキシだとイメージしておいてもらえると大丈夫です。
+Entity は userId ごとにインスタンスが存在します。
+つまり、ユーザー一人に対して Entity が 1つ割あたっているとイメージしてもらえるとよいです。
+ask の結果として、コードでは ack と書いちゃってますが、Done が返ってきたら、ServiceCall の第二型引数が NotUsed なので、NotUsed を返すようにします。
 
 ---
 
@@ -865,6 +883,10 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 }
 ```
 ]
+
+???
+
+
 
 ---
 
@@ -917,6 +939,11 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 }
 ```
 ]
+
+???
+
+伝統的なCRUDのアプリケーションでは DELETE を使ってデータの存在を消していましたが、
+イベントソーシングでは DELETE したという事実を残します。
 
 ---
 
@@ -1041,6 +1068,20 @@ class: center, middle
 .footnote[
 引用: [Lagom #Consuming services](http://www.lagomframework.com/documentation/1.0.x/java/ServiceClients.html)
 ]
+
+---
+
+## Open？ Close？
+
+* CircuitBreaker はもともと電子工学の言葉
+* 電流が流れすぎているときに電流を遮断する保護回路
+
+.center.height-6[
+![](resources/img/cb-open-close.svg)
+]
+
+* **Close**: 回路が**閉じた**状態 = 通信できる
+* **Open**: 回路が**開いた**状態 = 通信が遮断されている
 
 ---
 

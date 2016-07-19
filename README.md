@@ -30,7 +30,7 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
 
     ```bash
     $ cd ~/workspace
-    $ git clone git@github.com:negokaz/lagom-hands-on-development.git
+    $ git clone https://github.com/negokaz/lagom-hands-on-development.git
     ```
 
 * プロジェクトのディレクトリに移動し、開発環境を起動します

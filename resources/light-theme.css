@@ -1056,6 +1056,13 @@ body {
 .remark-slide-number {
   padding: 0 !important;
 }
+.remark-notes {
+  font-size: 0.6rem;
+}
+.remark-notes-preview {
+  font-size: 0.6rem;
+  opacity: 0.6;
+}
 h1,
 h2,
 h3,
@@ -1139,7 +1146,7 @@ hr {
 .with-border-frame * {
   border: 0.1rem solid rgba(0, 0, 0, 0.3);
 }
-.with-code-annotation > p * {
+.with-code-annotation > p > * {
   border: 0.05rem solid rgba(255, 255, 255, 0.75);
   background-color: rgba(255, 255, 255, 0.73);
 }

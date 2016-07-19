@@ -8,8 +8,10 @@
 </head>
 <body>
 <div class="remote-controller">
-  <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
-  <label for="enable-sync" class="subscribe-control">講演者と同期</label>
+  <label for="enable-sync" class="subscribe-control">
+    <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
+    <span>講演者と同期</span>
+  </label>
 </div>
 <textarea id="source">
 
@@ -462,7 +464,7 @@ Lagom との話し方
 ## Lagom の内部APIで呼んでみる
 
 .with-code-annotation[
-`ChirpServiceImpl.java`
+.activator-ui-link[[ChirpServiceImpl.java:114](#code/chirp-impl/src/main/java/sample/chirper/chirp/impl/ChirpServiceImpl.java:114)]
 ```java
   public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
           /////////////////////////////////////////
@@ -487,12 +489,16 @@ Lagom との話し方
 ```
 ]
 
+???
+
+* Activator UI のチュートリアルにソースへのリンクがあります。
+
 ---
 
 ## Lagom の内部APIで呼んでみる
 
 .with-code-annotation[
-`ChirpServiceImpl.java`
+.activator-ui-link[[ChirpServiceImpl.java:114](#code/chirp-impl/src/main/java/sample/chirper/chirp/impl/ChirpServiceImpl.java:114)]
 ```java
   public ServiceCall<LiveChirpsRequest, Source<Chirp, ?>> getLiveChirps(String userId) {
           /////////////////////////////////////////
@@ -550,7 +556,7 @@ $ git checkout step2
 ## コードの解説
 
 .with-code-annotation[
-`ChirpServiceImpl.java`
+.activator-ui-link[[ChirpServiceImpl.java:114](#code/chirp-impl/src/main/java/sample/chirper/chirp/impl/ChirpServiceImpl.java:114)]
 ```java
               // TODO: STEP2 - DeleteFavorite(コマンド)をFavoriteEntityに送る
               CompletionStage<Integer> favorCount =
@@ -724,7 +730,7 @@ class: middle, center
 ## APIの定義を確認
 
 .with-code-annotation[
-`FavoriteService.java`
+.activator-ui-link[[FavoriteService.java:42](#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java:42)]
 ```java
 ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
 
@@ -749,7 +755,7 @@ this::deleteFavorite は **メソッド参照**
 
 ## APIの定義を確認
 .with-code-annotation[
-`FavoriteService.java`
+.activator-ui-link[[FavoriteService.java:42](#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java:42)]
 ```java
 *ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
 
@@ -773,7 +779,7 @@ default Descriptor descriptor() {
 ## コマンドの送信を実装
 
 .with-code-annotation[
-`FavoriteServiceImpl.java`
+.activator-ui-link[[FavoriteServiceImpl.java:56](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteServiceImpl.java:56)]
 ```java
 @Override
 public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
@@ -793,7 +799,7 @@ public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
 ## コマンドの送信を実装
 
 .with-code-annotation[
-`FavoriteServiceImpl.java`
+.activator-ui-link[[FavoriteServiceImpl.java:56](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteServiceImpl.java:56)]
 ```java
 @Override
 public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
@@ -834,7 +840,7 @@ DDDにおけるEntityと一致します。
 ## イベントの永続化を実装
 
 .with-code-annotation[
-`FavoriteEntity.java`
+.activator-ui-link[[FavoriteEntity.java:27](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:27)]
 ```java
 public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
     BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
@@ -856,7 +862,7 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 ## イベントの永続化を実装
 
 .with-code-annotation[
-`FavoriteEntity.java`
+.activator-ui-link[[FavoriteEntity.java:47](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:47)]
 ```java
 public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
     `BehaviorBuilder` b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
@@ -880,7 +886,7 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 ## イベントの永続化を実装
 
 .with-code-annotation[
-`FavoriteEntity.java`
+.activator-ui-link[[FavoriteEntity.java:47](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:47)]
 ```java
 public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
     BehaviorBuilder b = newBehaviorBuilder(snapshotState.orElse(FavoriteState.builder().build()));
@@ -909,7 +915,7 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 ## イベントの永続化を実装
 
 .with-code-annotation[
-`FavoriteEntity.java`
+.activator-ui-link[[FavoriteEntity.java:47](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:47)]
 ```java
     //////////////////////////////////////////////
     /*
@@ -1077,6 +1083,9 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
       max-width:  0.5rem;
       max-height: 0.5rem;
     }
+    .subscribe-control {
+      cursor: pointer;
+    }
     @media print {
       .remote-controller {
         display: none;
@@ -1139,6 +1148,9 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
   <script>
     // 全てのリンクが別のタブで開くようにする
     $('a').attr({target: "_blank"});
+    $('.activator-ui-link a').each(function() {
+      $(this).attr({target: "activator-ui", href: "http://127.0.0.1:8888/app/lagom-hands-on-development/" + $(this).attr("href")});
+    });
   </script>
 </body>
 </html>

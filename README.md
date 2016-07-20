@@ -13,6 +13,11 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
 * [git](https://git-scm.com/)
 * [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
+## 最小動作環境
+
+* CPU: 2Core
+* RAM: 4GB
+
 ## 事前準備
 
 * Java のバージョンが1.8系になっているか確認してください

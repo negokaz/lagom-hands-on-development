@@ -37,7 +37,7 @@ background-image: url("resources/img/title-background.jpg")
 ]
 
 .footnote[
-TODO: .height-4[![](http://2016.techfesta.jp/assets/img/toplogo.png)]
+.height-4[![](http://2016.techfesta.jp/assets/img/toplogo.png)]
 ]
 
 ???
@@ -271,8 +271,6 @@ Twitter ライクなアプリケーション
 * .with-checkbox-on[フォロワーと自分のつぶやきを閲覧]
 
 .footnote[
-[ネイティブっぽい発音は「ちぇぁぱー」](https://translate.google.co.jp/#en/ja/Chirper)
-
 [https://github.com/lagom/activator-lagom-java-chirper](https://github.com/lagom/activator-lagom-java-chirper)
 ]
 
@@ -704,6 +702,8 @@ Lagom ではこのように、普通に REST で API の呼び出しをするよ
 
 ???
 
+見て頂いてる getLiveChirps というメソッドは特定のユーザーのつぶやきのストリームを取得するAPIです。
+
 ここでは、とりあえずハイライトされいている部分のソースを書き換えてください。
 後で詳しく解説します。
 
@@ -753,36 +753,83 @@ Lagom ではこのように、普通に REST で API の呼び出しをするよ
 ]
 
 .footnote[
-[Java SE 8 API - `CompletionStage<T>`](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html)
+[Java SE 8 API - CompletionStage&amp;lt;T&amp;gt;](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html)
 ]
+
+???
+
+favoriteService は FavoriteServiceの実体への Proxy です。 (java.lang.reflect.Proxy)
+getFavorCount がお気に入りされた数を取得するAPIです。
+getFavorCount で ServiceCall というAPIの呼び出しを抽象化したオブジェクトが返ってくるので、
+そのオブジェクトの invoke を呼び出します。
+
+invoke を呼び出すと、 CompletionStage という非同期処理の戻り値が返ってきます。
+簡単に言うと、まだ決定していない「未来の値」を表します。
 
 ---
 
 ## なぜ非同期API？
 
+???
+
+では、なぜ Lagom ではこのように非同期のAPIが採用されているのでしょうか？
+
 --
 * 応答速度のため
+
+???
+
+一つは応答速度のためです。
+
 --
 .center[![](resources/img/why-asynchronous.svg)]
 
+???
+
+先ほど実装して頂いたコードでは、大きく3つのことをしています。
+* １つは、つぶやきの一覧を取得すること
+* ２つ目に、取ってきたつぶやきがお気に入りされた数を取得すること
+* ３つ目に、ユーザーがお気に入りしたつぶやきのIDを取ってくること です。
+
+同期処理では、まずつぶやきの一覧をとってきて、その一覧を元にお気に入りされた数を取りに行って、
+最後にお気に入りしたつぶやきのIDを取ってくる、という感じになると思います。
+
+非同期だと、まずつぶやきの一覧を取りに行くのと③のユーザーがお気に入りしたつぶやきのIDを取ってくるのは同時にリクエストすることができます。
+お気に入りされた数は、つぶやきの一覧に紐付けて取りに行かないといけないので、少し出遅れますが、
+何件かつぶやきが取れてきた時点から、数の問い合わせが開始できます。
+
+トータルで見ると、かなりの時間短縮ができているのがお分かりいただけるとおもいます。
+
+同期処理として実装した場合のリスクとしては、次のようなことが考えられます。
+
 ---
 
-## なぜ非同期API？
-
-* 応答速度のため
+## 同期処理として実装した場合のリスク
 
 * もっと呼び出すAPIが増えたら？
     * レイテンシはより増大
     * 呼び出し先のサービスでも同期処理してると…
+
+???
+
+同期処理として実装した場合、APIの呼び出しが更に4つ5つと増えていくと、
+さらにレイテンシが増大してしまうという問題があります。
+
+さらに呼び出した先でも同期処理をしていると、どんどんレイテンシが蓄積されていくことになります。
+MSAにすると、ネットワークのオーバーヘッドが大きくなるので、この問題がさらに大きくなる可能性があります。
+
 --
 
 * もっとリクエストが増えたら？
-    * CPUに余裕があるのにメモリが枯渇
+    * スレッドの消費が増えてメモリが枯渇
     * いわゆる C10K 問題
 
 ???
 
-* ブロックする呼び出しによってスレッドが専有される
+さらに、リクエストがとても増えた場合に一つ一つのリクエストがスレッドを消費するのでスレッドが大量に必要になります。
+そうなると、メモリが枯渇してしまいます。いわゆるクライアント10K問題が起きる可能性があります。
+
+以上のことから、大規模なMSAにおいては非同期APIで実装することが大事になります。
 
 ---
 
@@ -798,6 +845,13 @@ $ git checkout step2
 ```
 ]
 
+???
+
+もし、先ほどのハンズオンが実装できなかった方がいれば、
+次に進むのでこのコマンドで回答をチェックアウトしておいてください。
+
+続いては、
+
 ---
 class: middle, center
 
@@ -809,12 +863,20 @@ class: middle, center
 
 **【0:55】**
 
+お気に入り解除の永続化を実装していきます。
+ここから少し難しくなるので、ちょっと気合入れて下さい。
+
 ---
 
 ## Lagom における永続化
 
 * 高い可用性とスケーラビリティを実現するため<br>
   .strong[Event Sourcing] と .strong[CQRS] による永続化のしくみを備えている
+
+???
+
+Lagom での永続化は少し特殊です。
+高い可用性とスケーラビリティを実現するために Event Sourcing と CQRS という方式が標準になっています。
 
 ---
 
@@ -829,6 +891,18 @@ class: middle, center
         * スケールしやすい
         * 耐障害性を高められる
 
+???
+
+Event Sourcing はシステムの中で起きたイベントを永続化するという方式です。
+例えば「ユーザーがお気に入りした」「ユーザーがお気に入りを解除」したといったイベントを永続化していきます。
+
+イベントはデータストアに次々に INSERT されていきます。
+
+データをINSERTするだけなので、ロックが不要になり高いスループットを実現することができるようになります。
+
+また、イベントはイミュータブルなので、キャッシュやコピー、共有といったことが簡単にできて、
+スケールがしやすくなり、またレプリカも簡単に作れるので耐障害性も高めやすいです。
+
 ---
 
 ## Event Sourcing
@@ -837,6 +911,15 @@ class: middle, center
 .float-top-40[
 ![](resources/img/event-sourcing.1.svg)
 ]
+
+???
+
+少しイメージをつけてもらうために、図にしてみました。
+Event Source がイベントを蓄積しておくところです。
+現在の状態は誰が持つの？ということについては、Lagom では Entity というものが現在の状態を持ちます。
+
+ID:1 のつぶやきをお気に入り追加というイベントが起きれば、Entityではお気に入りは ID:1 だけですという状態になります。
+
 ---
 
 ## Event Sourcing
@@ -845,6 +928,11 @@ class: middle, center
 .float-top-40[
 ![](resources/img/event-sourcing.2.svg)
 ]
+
+???
+
+ID:2 のつぶやきをお気に入り追加というイベントが起きれば、Entity ではお気に入りは ID:1 と 2 ですという状態になります。
+
 ---
 
 ## Event Sourcing
@@ -853,6 +941,11 @@ class: middle, center
 .float-top-40[
 ![](resources/img/event-sourcing.3.svg)
 ]
+
+???
+
+ID:1 のつぶやきのお気に入りを削除というイベントが起きれば、Entity ではお気に入りは 2 だけですという状態になります。
+
 ---
 
 ## Event Sourcing
@@ -861,6 +954,12 @@ class: middle, center
 .float-top-40[
 ![](resources/img/event-sourcing.4.svg)
 ]
+
+???
+
+というふうな感じで、イベントが処理されていきます。
+そして、この Event Source に並んでいるこれらのイベントが時系列順に永続化されます。
+
 ---
 
 ## Event Sourcing
@@ -868,6 +967,16 @@ class: middle, center
 * デメリット
   * データの集計にコストがかかる
   * ⇒ CQRSで解決できる
+
+???
+
+残念ながら、Event Sourcing にはデメリットがあります。
+それは、データの集計にコストがかかるということです。
+
+例えば、あるつぶやきがお気に入りされた数を数えたいという場合、全てのイベントを順番に見ていかないといけないので
+とても時間がかかってしまいます。
+
+しかし、このデメリットは CQRS という方式で解決することができます。
 
 ---
 
@@ -881,6 +990,19 @@ class: middle, center
     * 別々にスケールできるようになる
     * ⇒ Command-Side にイベントソーシングを使い<br>Query-Side に集計しやすい形で永続化する
 
+???
+
+CQRS は日本語でコマンドクエリ責務分離と言います。
+つまり、データの書き込みをするコマンドと、データの読み込みをするクエリを分離しましょうという考え方です。
+CQRS にすることによって、書き込み側と読み込み側で異なるDBの実装やデータ構造が使えるようになります。
+
+さらに、読み込み側と書き込み側で別々にスケールさせることもできるようになります。
+
+Event Sourcing とどう組み合わせるのか？というと、
+Command-Side に Event Sourcing を使って Query-Side へ集計しやすい形で永続化します。
+
+イメージしやすいように図にしてきました。
+
 ---
 
 ## CQRS
@@ -888,6 +1010,25 @@ class: middle, center
 .center[
 ![](resources/img/es-and-cqrs.svg)
 ]
+
+???
+
+* 上が Query-Side で、下が Command-Side
+* 各箱の中の名前は、後ほどの実装にも出てくるので Lagom のクラス名で書いています
+* Command-Side から見ていく
+
+----------
+
+* API の呼び出しがあると、まず ServiceImpl が Command なのか Query なのかを判断して処理します
+* Command だったときは Command が PersistentEntity に送られます
+* PersistentEntity は Command から Event を作って、DBに永続化します。永続化できたら、自身の状態を更新します。
+
+----------
+
+* 次にQuerySideです
+* QuerySide では EventProcessor というものが Event の入っているDBからイベントをポーリングで取ってきます
+* このイベントにもとづいてQuery側のDBをCRUDで普通に更新をかけます。
+* 外からQueryのAPI呼び出しがあれば、ServiceImplでクエリを発行してデータをレスポンスします
 
 ---
 
@@ -899,6 +1040,19 @@ class: middle, center
       * ⇒ 一時的に一貫性が取れてなくても問題ないよう
       ビジネスやシステムを設計する
 
+???
+
+でも残念ながら、この方式にはデメリットがあります。
+それは、書き込みと読み込みで完全な一貫性を保てなくなります。
+
+一時的に一貫性のない状態になって、十分な時間が経つと整合性がとれるような状態になります。
+この性質は結果整合性といいます。
+
+このデメリットがあるので、Event Sourcing と CQRS を採用する場合は一時的に一貫性がとれていなくても
+問題ないようにビジネスやシステムを設計する必要があります。
+
+では、早速 Event Sourcing の実装をしていきます。
+
 ---
 
 ## Event Sourcing で実装してみる
@@ -906,6 +1060,10 @@ class: middle, center
 * WIP のところを実装をします
 
 .center[![](resources/img/services-write2.svg)]
+
+???
+
+ここでは、お気に入りの削除を永続化するところを実装します。
 
 ---
 
@@ -917,6 +1075,14 @@ class: middle, center
 
 .height-10.center[![](resources/img/services-write2.svg)]
 
+???
+
+これからやることは、3つあります。
+
+* まず、FavoriteService でお気に入り削除のAPIがどのように定義されているか確認します。
+* 次に FavoriteServiceImpl で Entity にコマンドを送るという処理を実装します。
+* 最後に、FavoriteEntity でイベントの永続化をします。
+
 ---
 
 ## APIの定義を確認
@@ -924,12 +1090,12 @@ class: middle, center
 .with-code-annotation[
 .activator-ui-link[[FavoriteService.java:42](#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java:42)]
 ```java
-ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
+ServiceCall<FavoriteId, NotUsed> deleteFavorite(String `userId`);
 
 @Override
 default Descriptor descriptor() {
     return named("favoriteservice").withCalls(
-            pathCall("/api/favorites/:userId/delete", this::deleteFavorite)
+*          pathCall("/api/favorites/:userId/delete", this::deleteFavorite)
     )
 }
 ```
@@ -941,7 +1107,14 @@ default Descriptor descriptor() {
 
 ???
 
-this::deleteFavorite は **メソッド参照**
+ではまず、APIの定義を確認していきます。FavoriteService のソースを開いて下さい。
+
+ここでは、APIの定義がされています。
+pathCall の第一引数にAPIのURLが定義されています。
+第二引数にメソッド参照が渡されていますが、これは上のほうで定義されている ServiceCall を返すメソッドです。
+1つ userId という引数がとれるようになっていて、ここにはURLの中にある`:userId`の部分にある文字列が渡されます。
+
+つまり、このURLが呼ばれると userId をパラメータとして deleteFavorite メソッドが呼ばれる。ということになります。
 
 ---
 
@@ -966,6 +1139,19 @@ default Descriptor descriptor() {
     * 第二型引数: Response Body の型
   .small[[NotUsed](http://doc.akka.io/japi/akka/snapshot/akka/NotUsed$.html)はレスポンスボディ無しを表す]
 
+???
+
+つぎに、ServiceCallを少し詳しく見ていきます。
+ServiceCall は２つの型引数がとれるようになっています。
+
+第一型引数は Request Body、第二型引数は Response Body の型になります。
+この2つの型引数のオブジェクトは必要に応じて自動的にJSONからデシリアライズされたり、JSONにシリアライズされたりします。
+
+NotUsed は少し特殊な型で、ボディなしを表す型です。
+第二引数に指定していると、レスポンスボディがなしという意味になります。
+
+では次は、FavoriteServiceの実装に移って、deleteFavoriteメソッドを実装していきます。
+
 ---
 
 ## コマンドの送信を実装
@@ -988,12 +1174,13 @@ public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
 
 ???
 
-お気に入りを削除する DeleteFavorite コマンドを FavoriteEntity に送信するコードを実装します。
-
-FavoriteService のインターフェイスで定義された deleteFavorite というメソッドを実装します。
-ここでは、ServiceCall の第一型引数にある FavoriteId を受けて、
+deleteFavorite メソッドには、ServiceCall の第一型引数にある FavoriteId を受けて、
 受けて NotUsed の CompletionStage を返す関数を定義します。
+
 ちょっとAPIがややこしいですが、あまり深く考えずに request の矢印の先にある括弧の中に処理を書けばよいです。
+
+ここに、TODOのコメントに書いていますが、
+お気に入りを削除するための DeleteFavorite コマンドを FavoriteEntity に送信するコードを実装します。
 
 ---
 
@@ -1024,6 +1211,7 @@ public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
 
 DeleteFavorite というコマンドを作って、userId に紐づく favoriteEntityRef に対してコマンドを ask メソッドで送信します。
 EntityRef はここでは、Entity の実体へのプロキシだとイメージしておいてもらえると大丈夫です。
+
 Entity は userId ごとにインスタンスが存在します。
 つまり、ユーザー一人に対して Entity が 1つ割あたっているとイメージしてもらえるとよいです。
 ask の結果として、コードでは ack と書いちゃってますが、Done が返ってきたら、ServiceCall の第二型引数が NotUsed なので、NotUsed を返すようにします。
@@ -1040,7 +1228,12 @@ ask の結果として、コードでは ack と書いちゃってますが、Do
 
 ???
 
-DDDにおけるEntityと一致します。
+で、これまでちょくちょく Entity という言葉が出てきているので、
+詳しく解説しておきます。
+
+(上の説明)
+
+ちなみに、LagomにおけるEntityはDDDにおけるEntityの性質を備えています。
 
 ---
 
@@ -1066,7 +1259,9 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 
 ???
 
+ではまず、FavoriteEntity のソースに移動してください。
 
+ここでは、2つのことをやります。
 
 ---
 
@@ -1090,7 +1285,12 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 ```
 ]
 
-* `BehaviorBuilder` に**コマンド**や**イベント**のハンドラ(関数)を登録する
+* `BehaviorBuilder` に**コマンド**と**イベント**のハンドラ(関数)を登録する
+
+???
+
+BehaviorBuilder という Entity の振る舞いを定義するためのビルダーを使って、
+コマンドとイベントのハンドラを登録します。
 
 ---
 
@@ -1122,8 +1322,17 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 
 ???
 
-伝統的なCRUDのアプリケーションでは DELETE を使ってデータの存在を消していましたが、
-イベントソーシングでは DELETE したという事実を残します。
+まずは、コマンドのハンドラを登録します。
+第一引数に、コマンドのクラスを、第二引数にそのコマンドを受信したときに実行する処理を関数で渡します。
+まず、FavoriteDeleted というイベントをリクエストのデータを使って作ります。
+
+で、ctxの thenPersistの第一引数に永続化したいイベントを指定して、イベントが永続化できた後の処理を第二引数で指定します。
+ここでは、Doneという完了を表すオブジェクトを返信しています。
+
+ちなみに、FavoriteDeleted の引数が request のデータを入れているだけなので、コマンドを直接永続化すればいいんじゃないの？という疑問が出てくるんですが、
+
+Command と Event を別にすることによって、Command の情報に加えて、Entity側の都合で例えば現在時刻をイベントに含めたりすることができるようになります。
+これによって、Commandを送る側は最低限の情報だけ送ればよくなります。
 
 ---
 
@@ -1154,6 +1363,18 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 ```
 ]
 
+???
+
+次は、イベントハンドラを定義します。
+コマンドハンドラでのイベントの永続化が完了すると、イベントハンドラの処理が呼ばれます。
+先ほどと同じように、ハンドルしたいクラスを第一引数に渡して、第二引数で処理を書きます。
+
+ここでは、Entityの状態を更新します。
+state メソッドでこの Entity の状態を持つオブジェクトが取れるので、その deleteFavoriteId メソッドにイベントに入っている favoriteId を渡します。
+これによって、このEntityはこのお気に入りが削除された状態になります。
+
+実装が終わったら、動きを確認してみてください。
+
 ---
 
 ## 動きの確認
@@ -1164,6 +1385,12 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 
 ???
 【10分】
+
+まず、お気に入りが解除できるようになっていることを確認してください。
+そして、解除したときにお気に入りの数が変化するのにタイムラグがあるのを確認してください。
+何度か画面を更新すると反映されると思います。
+
+ここにタイムラグがあるのは、お気に入りの数が CQRS の Query-Side で集計されているためです。
 
 ---
 
@@ -1179,6 +1406,10 @@ $ git checkout step3
 ```
 ]
 
+???
+
+実装が間に合わなかった場合はこのコマンドでチェックアウトできます。
+
 ---
 
 ## まとめ
@@ -1186,6 +1417,17 @@ $ git checkout step3
 * 非同期処理でレイテンシを低くする
 * Event Sourcing + CQRS で永続化機能に<br>高いスケーラビリティと耐障害性を持たせる
     * 結果整合性を意識した設計にする
+
+???
+
+ハンズオンは以上です。
+
+今回は Lagom の設計ポリシーから2つのことを知って頂けたかと思います。
+一つは、非同期処理でレイテンシを低く抑えるということ。
+二つ目は、Event Sourcing と CQRS を使って、永続化機能に高いスケーラビリティと耐障害性を持たせるということ、
+ただし、これを使う場合は結果整合性を意識した設計にする必要があります。
+
+今回知って頂けたことが、今後の皆さんのマイクロサービスの開発に役立つことを願っています。
 
 ---
 
@@ -1196,7 +1438,15 @@ $ git checkout step3
 * [Developing Reactive Microservices (O’Reilly)](http://www.oreilly.com/programming/free/developing-reactive-microservices-signup.html)
 
 ???
-'
+
+今回のハンズオンの参考資料はこちらです。
+
+今回のハンズオンで、大規模なマイクロサービスの開発、大変そう…
+と思われたかもしれません。
+でも、ご安心下さい。
+
+実は生産技では
+
 ---
 
 ## TIS㈱ リアクティブ・システム<br>コンサルティングサービス
@@ -1214,6 +1464,15 @@ https://www.tis.jp/service_solution/goreactive/
 TIS は Lightbend 社の認定コンサルティングパートナーです
 ]
 
+???
+
+リアクティブ・システムコンサルティングサービスを行っています。
+今回ハンズオンした Reactive な マイクロサービスアーキテクチャはもちろん Akka、 Play、Scala
+などといった技術の POC をやってみたい、設計レビューしてほしいなどといったご用件があれば
+生産技がお手伝いさせて頂きます。
+
+是非ご相談ください。
+
 ---
 class: middle, center
 
@@ -1221,7 +1480,7 @@ class: middle, center
 
 ???
 
-90/76
+本日はありがとうございました。
 
 ---
 

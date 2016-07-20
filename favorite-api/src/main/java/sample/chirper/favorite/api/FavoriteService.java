@@ -3,6 +3,7 @@ package sample.chirper.favorite.api;
 import static com.lightbend.lagom.javadsl.api.Service.*;
 
 import akka.NotUsed;
+import com.lightbend.lagom.javadsl.api.CircuitBreaker;
 import com.lightbend.lagom.javadsl.api.Descriptor;
 import com.lightbend.lagom.javadsl.api.Service;
 import com.lightbend.lagom.javadsl.api.ServiceCall;
@@ -18,6 +19,8 @@ public interface FavoriteService extends Service {
 
     /**
      * お気に入りを削除する
+     * ServiceCall<REQUEST, RESPONSE>
+     * @param userId ユーザーのID
      */
     ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId);
 

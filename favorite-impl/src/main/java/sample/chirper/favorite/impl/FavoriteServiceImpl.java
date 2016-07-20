@@ -21,19 +21,38 @@ import java.util.concurrent.CompletableFuture;
  */
 public class FavoriteServiceImpl implements FavoriteService {
 
-    public FavoriteServiceImpl() {
+    private PersistentEntityRegistry persistentEntities;
+
+    private final CassandraSession db;
+
+    @Inject
+    public FavoriteServiceImpl(PersistentEntityRegistry persistentEntities,
+                               CassandraReadSide readSide,
+                               CassandraSession db) {
+        this.persistentEntities = persistentEntities;
+        this.persistentEntities.register(FavoriteEntity.class);
+        this.db = db;
+
+        readSide.register(FavoriteEventProcessor.class);
+    }
+
+    private PersistentEntityRef<FavoriteCommand> favoriteEntityRef(String userId) {
+        return this.persistentEntities.refFor(FavoriteEntity.class, userId);
     }
 
     @Override
     public ServiceCall<FavoriteId, NotUsed> addFavorite(String userId) {
         return request -> {
-            return CompletableFuture.completedFuture(NotUsed.getInstance());
+            CompletionStage<Done> adding =
+                    favoriteEntityRef(userId).ask(AddFavorite.of(userId, request.getFavoriteId()));
+            return adding.thenApply(ack -> NotUsed.getInstance());
         };
     }
 
     @Override
     public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
         return request -> {
+            // TODO: STEP3 - DeleteFavorite(コマンド)をFavoriteEntityに送る
             return CompletableFuture.completedFuture(NotUsed.getInstance());
         };
     }
@@ -41,14 +60,20 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public ServiceCall<NotUsed, POrderedSet<String>> getFavorites(String userId) {
         return notUsed -> {
-            return CompletableFuture.completedFuture(OrderedPSet.empty());
+            CompletionStage<GetFavoritesReply> favorites =
+                    favoriteEntityRef(userId).ask(GetFavorites.of());
+            return favorites.thenApply(rep -> rep.getFavoriteIds());
         };
     }
 
     @Override
     public ServiceCall<NotUsed, Integer> getFavorCount(String favoriteId) {
         return notUsed -> {
-            return CompletableFuture.completedFuture(0);
+            return db.selectOne("SELECT COUNT(*) AS favor_count FROM favor WHERE favoriteId = ?", favoriteId)
+                    .thenApply(optionalRow ->
+                        optionalRow.map(r -> r.getLong("favor_count")).orElse(0L).intValue()
+                    );
+
         };
     }
 }

@@ -95,6 +95,7 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
 
 * [チュートリアル](http://127.0.0.1:8888/app/lagom-hands-on-development/#tutorial/0) を確認し、スタッフの指示を待って下さい。
 
+
 ### Activator UI が起動しない場合
 
 下記のようなメッセージがターミナルに表示されていますか？

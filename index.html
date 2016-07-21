@@ -7,12 +7,10 @@
   <link rel="stylesheet" type="text/css" href="resources/light-theme.css" />
 </head>
 <body>
-<div class="remote-controller">
-  <label for="enable-sync" class="subscribe-control">
-    <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
-    <span>講演者と同期</span>
-  </label>
-</div>
+<label for="enable-sync" class="subscribe-control remote-controller">
+  <input type="checkbox" id="enable-sync" class="subscribe-control" unchecked />
+  <span>講演者と同期</span>
+</label>
 <textarea id="source">
 
 ## 準備
@@ -202,7 +200,7 @@ Lagom とは
 ## Lagom が目指すもの
 
 .center[
-<iframe src="https://www.slideshare.net/slideshow/embed_code/key/bpqBuXOj1fENSp?startSlide=29" width="476" height="388" frameborder="1" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/bpqBuXOj1fENSp?startSlide=29" width="577" height="470" frameborder="1" marginwidth="0" marginheight="0" scrolling="no"></iframe>
 ]
 
 .footnote[
@@ -920,7 +918,7 @@ Event Sourcing はシステムの中で起きたイベントを永続化する�
 ## Event Sourcing
 
 * システムの中で起きた**イベント**を永続化する
-.float-top-40[
+.float-top-30[
 ![](resources/img/event-sourcing.1.svg)
 ]
 
@@ -937,7 +935,7 @@ ID:1 のつぶやきをお気に入り追加というイベントが起きれば
 ## Event Sourcing
 
 * システムの中で起きた**イベント**を永続化する
-.float-top-40[
+.float-top-30[
 ![](resources/img/event-sourcing.2.svg)
 ]
 
@@ -950,7 +948,7 @@ ID:2 のつぶやきをお気に入り追加というイベントが起きれば
 ## Event Sourcing
 
 * システムの中で起きた**イベント**を永続化する
-.float-top-40[
+.float-top-30[
 ![](resources/img/event-sourcing.3.svg)
 ]
 
@@ -963,7 +961,7 @@ ID:1 のつぶやきのお気に入りを削除というイベントが起きれ
 ## Event Sourcing
 
 * システムの中で起きた**イベント**を永続化する
-.float-top-40[
+.float-top-30[
 ![](resources/img/event-sourcing.4.svg)
 ]
 
@@ -1604,9 +1602,7 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
       z-index: 999;
       background: rgba(255, 255, 255, 0.50);
       border: 0.05rem solid rgba(255, 255, 255, 0.80);
-      padding: 0 0.5rem 0.3rem 0;
-    }
-    .remote-controller label {
+      padding: 0 0.5rem 0 0.1rem;
       font-size: 0.6rem;
       color: rgba(0, 0, 0, 0.50);
     }

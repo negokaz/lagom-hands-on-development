@@ -84,7 +84,7 @@ Scala や Akka、Play といった技術の検証やコンサルを おこなっ
 
 ---
 
-## MSAの利点 (1/2)
+## MSAの利点 .smaller[(1/2)]
 
 * サービスごとに異なる技術が使える
   * サービスの特性に合った技術を採用できる
@@ -105,7 +105,7 @@ MSAではその影響範囲を小さくできるので、より低いリスク�
 
 ---
 
-## MSAの利点 (2/2)
+## MSAの利点 .smaller[(2/2)]
 
 * レジリエンス(回復性)が得られる
     * 一部のサービスが止まっても全体としては動き続ける
@@ -1107,7 +1107,7 @@ ServiceCall<FavoriteId, NotUsed> deleteFavorite(String `userId`);
 @Override
 default Descriptor descriptor() {
     return named("favoriteservice").withCalls(
-*          pathCall("/api/favorites/:userId/delete", this::deleteFavorite)
+*           pathCall("/api/favorites/:userId/delete", this::deleteFavorite)
     )
 }
 ```
@@ -1163,6 +1163,16 @@ NotUsed は少し特殊な型で、ボディなしを表す型です。
 第二引数に指定していると、レスポンスボディがなしという意味になります。
 
 では次は、FavoriteServiceの実装に移って、deleteFavoriteメソッドを実装していきます。
+
+---
+
+## Event Sourcing で永続化
+
+### TODO
+
+* .with-checkbox-on[FavoriteService でAPIの定義を確認]
+* .with-checkbox-off[FavoriteServiceImpl にコマンドの送信を実装]
+* .with-checkbox-off[FavoriteEntity にイベントの永続化を実装]
 
 ---
 
@@ -1249,7 +1259,17 @@ ask の結果として、コードでは ack と書いちゃってますが、Do
 
 ---
 
-## イベントの永続化を実装
+## Event Sourcing で永続化
+
+### TODO
+
+* .with-checkbox-on[FavoriteService でAPIの定義を確認]
+* .with-checkbox-on[FavoriteServiceImpl にコマンドの送信を実装]
+* .with-checkbox-off[FavoriteEntity にイベントの永続化を実装]
+
+---
+
+## イベントの永続化を実装 .smaller[(1/3)]
 
 .with-code-annotation[
 .activator-ui-link[[FavoriteEntity.java:27](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:27)]
@@ -1277,7 +1297,7 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
 
 ---
 
-## イベントの永続化を実装
+## イベントの永続化を実装 .smaller[(1/3)]
 
 .with-code-annotation[
 .activator-ui-link[[FavoriteEntity.java:47](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:47)]
@@ -1306,7 +1326,7 @@ BehaviorBuilder という Entity の振る舞いを定義するためのビル�
 
 ---
 
-## イベントの永続化を実装
+## イベントの永続化を実装 .smaller[(2/3)]
 
 .with-code-annotation[
 .activator-ui-link[[FavoriteEntity.java:47](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:47)]
@@ -1349,7 +1369,7 @@ Command と Event を別にすることによって、Command の情報に加え
 ---
 
 
-## イベントの永続化を実装
+## イベントの永続化を実装 .smaller[(3/3)]
 
 .with-code-annotation[
 .activator-ui-link[[FavoriteEntity.java:47](#code/favorite-impl/src/main/java/sample/chirper/favorite/impl/FavoriteEntity.java:47)]
@@ -1386,6 +1406,16 @@ state メソッドでこの Entity の状態を持つオブジェクトが取れ
 これによって、このEntityはこのお気に入りが削除された状態になります。
 
 実装が終わったら、動きを確認してみてください。
+
+---
+
+## Event Sourcing で永続化
+
+### TODO
+
+* .with-checkbox-on[FavoriteService でAPIの定義を確認]
+* .with-checkbox-on[FavoriteServiceImpl にコマンドの送信を実装]
+* .with-checkbox-on[FavoriteEntity にイベントの永続化を実装]
 
 ---
 

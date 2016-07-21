@@ -458,6 +458,18 @@ body:fullscreen {
   max-width: 5rem;
   max-hegiht: 5rem;
 }
+.smaller {
+  font-size: 0.8em;
+}
+.smaller * {
+  font-size: 0.8em;
+}
+.bigger {
+  font-size: 2em;
+}
+.bigger * {
+  font-size: 2em;
+}
 .big {
   /* for inline */
   font-size: 2rem;
@@ -490,7 +502,7 @@ body:fullscreen {
 .footnote {
   width: 85%;
   position: absolute;
-  bottom: 3rem;
+  bottom: 1.5rem;
   text-align: right;
   font-size: 0.6rem;
 }
@@ -1054,6 +1066,7 @@ body {
   font-family: 'mplus-1m-regular';
 }
 .remark-slide-number {
+  font-size: 0.7rem;
   padding: 0 !important;
 }
 .remark-notes {
@@ -1073,6 +1086,7 @@ h5,
 h6 {
   font-weight: 600;
   white-space: nowrap;
+  margin: 0.5rem 0;
 }
 code {
   padding: 0;

@@ -1676,15 +1676,10 @@ Lagom以外のサービスからLagomのAPIを呼ぶ場合は注意
     // 全てのリンクが別のタブで開くようにする
     $('a').attr({target: "_blank"});
     var isInActivatorUI = (window.location.search && window.location.search.indexOf("in-activator-ui=true") > -1);
-    if (isInActivatorUI) {
-      $('.activator-ui-link a').each(function() {
-        $(this).attr({target: "_top", href: "http://127.0.0.1:8888/app/lagom-hands-on-development/" + $(this).attr("href")});
-      });
-    } else {
-      $('.activator-ui-link a').each(function() {
-        $(this).attr({target: "activator-ui", href: "http://127.0.0.1:8888/app/lagom-hands-on-development/" + $(this).attr("href")});
-      });
-    }
+    var linkTarget = isInActivatorUI ? "_top" : "activator-ui";
+    $('.activator-ui-link a').each(function() {
+      $(this).attr({target: linkTarget, href: "http://127.0.0.1:8888/app/lagom-hands-on-development/" + $(this).attr("href")});
+    });
   </script>
 </body>
 </html>

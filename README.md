@@ -52,9 +52,11 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
 
 * プロジェクトのディレクトリに移動し、開発環境を起動します
 
+    ※ Windows の場合、パスの区切り文字は`\`です。(例: `bin\activator`)
+
     ```bash
     $ cd lagom-hands-on-development
-    $ bin/activator ui
+    $ bin/activator ui # bin には移動せず実行してください
     ```
     自動的に [http://localhost:8888](http://localhost:8888) が開き、コードが閲覧できるようになります。(例:  [FavoriteService.java](http://127.0.0.1:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java))
 
@@ -73,8 +75,8 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
     $ cd lagom-hands-on-development
     $ bin/activator runAll
     ....
+    # ↓ のログが表示されると起動完了です
     [info] (Services started, use Ctrl+D to stop and go back to the console...)
-    # ↑起動完了のログ
     ```
 
     [http://localhost:9000](http://localhost:9000) に移動し、下記のような画面が表示されると起動成功です。

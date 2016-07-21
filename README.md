@@ -60,19 +60,19 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
     ```
     自動的に [http://localhost:8888](http://localhost:8888) が開き、コードが閲覧できるようになります。(例:  [FavoriteService.java](http://127.0.0.1:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java))
 
-    -----
-
-    ※ ここでURLが http://localhost:8888/app/lagom-hands-on-development/ で始まっていない場合は対処が必要です。
-    ページ下部の「Activator UI へのリンクが使えない場合」を確認して対処してください。
-
-    -----
-
     確認できたらターミナル上で`Ctrl + C`を押して終了します。
 
     -----
 
     ※ 依存ライブラリのダウンロードがバックグラウンドで行われるため、ブラウザが開くまで時間がかかる場合があります。(最大30分程度)
     ダウンロード中はログなどが出力されないため、フリーズしているように見えますが、少し待ってみてください。
+
+    -----
+
+    -----
+
+    ※ ここでURLが http://localhost:8888/app/lagom-hands-on-development/ で始まっていない場合は対処が必要です。
+    ページ下部の[「Activator UI へのリンクが使えない場合」](#activator-ui-へのリンクが使えない場合)を確認して対処してください。
 
     -----
 

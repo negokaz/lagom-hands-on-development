@@ -60,6 +60,13 @@ Lagom のサンプルプロジェクト [Chirper](https://github.com/lagom/activ
     ```
     自動的に [http://localhost:8888](http://localhost:8888) が開き、コードが閲覧できるようになります。(例:  [FavoriteService.java](http://127.0.0.1:8888/app/lagom-hands-on-development/#code/favorite-api/src/main/java/sample/chirper/favorite/api/FavoriteService.java))
 
+    -----
+
+    ※ ここでURLが http://localhost:8888/app/lagom-hands-on-development/ で始まっていない場合は対処が必要です。
+    ページ下部の「Activator UI へのリンクが使えない場合」を確認して対処してください。
+
+    -----
+
     確認できたらターミナル上で`Ctrl + C`を押して終了します。
 
     -----
@@ -105,4 +112,27 @@ This application is already running (Or delete ../lagom-hands-on-development/RUN
 表示されている場合は RUNNING_PID ファイルを削除してから再度 Activator UI を起動しなおしてください。
 ```bash
 rm RUNNING_PID
+```
+
+### Activator UI へのリンクが使えない場合
+
+`activator ui` を実行した後、表示されるページのURLを確認してください。
+`lagom-hands-on-development`の後に`-1`などが付いていますか？
+```
+http://127.0.0.1:8888/app/lagom-hands-on-development-1/
+```
+付いている場合は、activtor のメタファイルの修正が必要です。
+ホームディレクトリにある下記のファイルを編集してください。
+```
+.activator/1.0/config.json
+```
+URLの`/app/`の一つ後ろのパスがプロジェクトのIDになっています。
+
+上記ファイルの中でそのIDが記載されている部分があるはずなので、その部分を`lagom-hands-on-development`に変更してください。
+```
+"id":"lagom-hands-on-development-1"
+```
+↓
+```
+"id":"lagom-hands-on-development"
 ```

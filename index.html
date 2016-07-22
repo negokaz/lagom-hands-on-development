@@ -1217,7 +1217,7 @@ deleteFavorite メソッドには、ServiceCall の第一型引数にある Favo
 public ServiceCall<FavoriteId, NotUsed> deleteFavorite(String userId) {
     return request -> {
         // TODO: STEP3 - DeleteFavorite(コマンド)をFavoriteEntityに送る
-*       DeleteFavorite command = DeleteFavorite.of(userId, request.getFavoriteId());
+*       DeleteFavorite command = DeleteFavorite.of(userId, request.getChirpId());
 *       CompletionStage<Done> deleting = favoriteEntityRef(userId).ask(command);
 *       return deleting.thenApply(ack -> NotUsed.getInstance());
     };
@@ -1344,7 +1344,7 @@ public Behavior initialBehavior(Optional<FavoriteState> snapshotState) {
      */
 *   b.setCommandHandler(DeleteFavorite.class,
 *       (request, ctx) -> {
-*           FavoriteDeleted event = FavoriteDeleted.of(request.getUserId(), request.getFavoriteChirpId());
+*           FavoriteDeleted event = FavoriteDeleted.of(request.getUserId(), request.getChirpId());
 *           return ctx.thenPersist(event, (evt) -> ctx.reply(Done.getInstance()));
 *       }
 *   );
@@ -1385,13 +1385,13 @@ Command と Event を別にすることによって、Command の情報に加え
      */
     b.setCommandHandler(DeleteFavorite.class,
         (request, ctx) -> {
-            FavoriteDeleted event = FavoriteDeleted.of(request.getUserId(), request.getFavoriteChirpId());
+            FavoriteDeleted event = FavoriteDeleted.of(request.getUserId(), request.getChirpId());
             return ctx.thenPersist(event, (evt) -> ctx.reply(Done.getInstance()));
         }
     );
-    // TODO: STEP3 - FavoriteDeleted(イベント)が起きたときは状態からfavoriteId を削除
+    // TODO: STEP3 - FavoriteDeleted(イベント)が起きたときは状態から chirpId を削除
 *   b.setEventHandler(FavoriteDeleted.class,
-*       (evt) -> state().deleteFavoriteId(evt.getFavoriteId())
+*       (evt) -> state().deleteChirpId(evt.getChirpId())
 *   );
     //////////////////////////////////////////////
 ```
@@ -1404,7 +1404,7 @@ Command と Event を別にすることによって、Command の情報に加え
 先ほどと同じように、ハンドルしたいクラスを第一引数に渡して、第二引数で処理を書きます。
 
 ここでは、Entityの状態を更新します。
-state メソッドでこの Entity の状態を持つオブジェクトが取れるので、その deleteFavoriteId メソッドにイベントに入っている favoriteId を渡します。
+state メソッドでこの Entity の状態を持つオブジェクトが取れるので、その deleteChirpId メソッドにイベントに入っている chirpId を渡します。
 これによって、このEntityはこのお気に入りが削除された状態になります。
 
 実装が終わったら、動きを確認してみてください。

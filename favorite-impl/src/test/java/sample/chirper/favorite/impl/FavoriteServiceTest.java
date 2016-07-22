@@ -46,13 +46,13 @@ public class FavoriteServiceTest {
               favoriteService.getFavorites("user-A").invoke().toCompletableFuture().get(3, SECONDS);
 
       assertEquals(userAFavorites.size(), 1);
-      Assert.assertEquals(fav2.getFavoriteId(), userAFavorites.get(0));
+      Assert.assertEquals(fav2.getChirpId(), userAFavorites.get(0));
 
       POrderedSet<String> userBFavorites =
               favoriteService.getFavorites("user-B").invoke().toCompletableFuture().get(3, SECONDS);
 
       assertEquals(userBFavorites.size(), 1);
-      Assert.assertEquals(fav3.getFavoriteId(), userBFavorites.get(0));
+      Assert.assertEquals(fav3.getChirpId(), userBFavorites.get(0));
 
       int favorCount =
               favoriteService.getFavorCount("favorite-B-1").invoke().toCompletableFuture().get(3, SECONDS);

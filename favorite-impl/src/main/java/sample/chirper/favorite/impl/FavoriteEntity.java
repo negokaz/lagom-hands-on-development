@@ -34,13 +34,13 @@ public class FavoriteEntity extends PersistentEntity<FavoriteCommand, FavoriteEv
          */
         b.setCommandHandler(AddFavorite.class,
             (request, ctx) -> {
-                FavoriteAdded event = FavoriteAdded.of(request.getUserId(), request.getFavoriteChirpId());
+                FavoriteAdded event = FavoriteAdded.of(request.getUserId(), request.getChirpId());
                 return ctx.thenPersist(event, (evt) -> ctx.reply(Done.getInstance()));
             }
         );
-        // FavoriteAdded イベントが起きたときは状態に favoriteId を追加
+        // FavoriteAdded イベントが起きたときは状態に chirpId を追加
         b.setEventHandler(FavoriteAdded.class,
-            (evt) -> state().addFavoriteId(evt.getFavoriteId())
+            (evt) -> state().addChirpId(evt.getChirpId())
         );
 
         /*
@@ -50,7 +50,7 @@ public class FavoriteEntity extends PersistentEntity<FavoriteCommand, FavoriteEv
          *  → Done を送り返す
          */
 
-        // TODO: STEP3 - FavoriteDeleted(イベント)が起きたときは状態からfavoriteId を削除
+        // TODO: STEP3 - FavoriteDeleted(イベント)が起きたときは状態から chirpId を削除
 
         /*
          * GetFavorites(コマンド)が送られてくる
@@ -59,7 +59,7 @@ public class FavoriteEntity extends PersistentEntity<FavoriteCommand, FavoriteEv
         b.setReadOnlyCommandHandler(GetFavorites.class,
             (request, ctx) -> {
                 GetFavoritesReply favorites = GetFavoritesReply.builder()
-                        .favoriteIds(state().getFavoriteIds())
+                        .chirpIds(state().getChirpIds())
                         .build();
                 ctx.reply(favorites);
             }

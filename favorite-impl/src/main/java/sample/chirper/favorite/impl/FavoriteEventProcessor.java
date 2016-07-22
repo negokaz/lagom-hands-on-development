@@ -96,7 +96,7 @@ public class FavoriteEventProcessor extends CassandraReadSideProcessor<FavoriteE
         builder.setEventHandler(FavoriteAdded.class,
             (event, offset) -> {
                 BoundStatement bindWriteFavors = writeFavors.bind()
-                        .setString("favoriteId", event.getFavoriteId())
+                        .setString("favoriteId", event.getChirpId())
                         .setString("favoredBy", event.getUserId())
                         .setLong("timestamp", event.getTimestamp().toEpochMilli());
                 BoundStatement bindWriteOffset = writeOffset.bind(offset);
@@ -107,7 +107,7 @@ public class FavoriteEventProcessor extends CassandraReadSideProcessor<FavoriteE
         builder.setEventHandler(FavoriteDeleted.class,
             (event, offset) -> {
                 BoundStatement bindDeleteFavors = deleteFavors.bind()
-                        .setString("favoriteId", event.getFavoriteId())
+                        .setString("favoriteId", event.getChirpId())
                         .setString("favoredBy", event.getUserId());
                 BoundStatement bindWriteOffset = writeOffset.bind(offset);
                 return completedStatements(Arrays.asList(bindDeleteFavors, bindWriteOffset));

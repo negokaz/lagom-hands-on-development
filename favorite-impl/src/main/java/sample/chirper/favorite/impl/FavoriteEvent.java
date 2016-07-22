@@ -31,7 +31,7 @@ public interface FavoriteEvent extends Jsonable, AggregateEvent<FavoriteEvent> {
         String getUserId();
 
         @Value.Parameter
-        String getFavoriteId();
+        String getChirpId();
 
         @Value.Default
         default Instant getTimestamp() {
@@ -51,7 +51,7 @@ public interface FavoriteEvent extends Jsonable, AggregateEvent<FavoriteEvent> {
         String getUserId();
 
         @Value.Parameter
-        String getFavoriteId();
+        String getChirpId();
 
         @Value.Default
         default Instant getTimestamp() {

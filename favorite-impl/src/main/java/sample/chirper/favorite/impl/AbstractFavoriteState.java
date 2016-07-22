@@ -20,7 +20,7 @@ public interface AbstractFavoriteState extends Jsonable {
      * @return favoriteId のセット
      */
     @Value.Default
-    default POrderedSet<String> getFavoriteIds() {
+    default POrderedSet<String> getChirpIds() {
         return OrderedPSet.empty();
     }
 
@@ -29,10 +29,10 @@ public interface AbstractFavoriteState extends Jsonable {
      * @param favoriteId
      * @return
      */
-    default FavoriteState addFavoriteId(String favoriteId) {
-        POrderedSet<String> newFavoriteIds = getFavoriteIds().plus(favoriteId);
+    default FavoriteState addChirpId(String favoriteId) {
+        POrderedSet<String> newFavoriteIds = getChirpIds().plus(favoriteId);
         return FavoriteState.builder().from(this)
-                .favoriteIds(newFavoriteIds)
+                .chirpIds(newFavoriteIds)
                 .build();
     }
 
@@ -41,10 +41,10 @@ public interface AbstractFavoriteState extends Jsonable {
      * @param favoriteId
      * @return
      */
-    default FavoriteState deleteFavoriteId(String favoriteId) {
-        POrderedSet<String> newFavoriteIds = getFavoriteIds().minus(favoriteId);
+    default FavoriteState deleteChirpId(String favoriteId) {
+        POrderedSet<String> newChirpIds = getChirpIds().minus(favoriteId);
         return FavoriteState.builder().from(this)
-                .favoriteIds(newFavoriteIds)
+                .chirpIds(newChirpIds)
                 .build();
     }
 }

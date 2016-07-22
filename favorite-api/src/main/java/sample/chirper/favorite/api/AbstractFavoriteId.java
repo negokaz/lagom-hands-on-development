@@ -9,5 +9,5 @@ import org.immutables.value.Value;
 public interface AbstractFavoriteId {
 
     @Value.Parameter
-    String getFavoriteId();
+    String getChirpId();
 }

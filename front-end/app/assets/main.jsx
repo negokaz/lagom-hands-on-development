@@ -45,7 +45,7 @@ var Chirp = React.createClass({
                 </h3>
                 {this.props.children}
                 <Favorite enable={this.props.isFavorite}
-                          favoriteId={this.props.uuid}
+                          chirpId={this.props.uuid}
                           userId={this.props.userId}
                           favorCount={this.props.favorCount} />
                 <hr />
@@ -275,7 +275,7 @@ var Favorite = React.createClass({
             url: "/api/favorites/" + localStorage.userId + "/add",
             type: 'POST',
             data: {
-                favoriteId: this.props.favoriteId
+                chirpId: this.props.chirpId
             },
             success: function() {
                 this.setState({enable: true});
@@ -292,7 +292,7 @@ var Favorite = React.createClass({
             url: "/api/favorites/" + localStorage.userId + "/delete",
             type: 'POST',
             data: {
-                favoriteId: this.props.favoriteId
+                chirpId: this.props.chirpId
             },
             success: function() {
                 this.setState({enable: false});

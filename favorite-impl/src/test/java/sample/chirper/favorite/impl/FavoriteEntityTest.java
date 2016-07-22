@@ -38,7 +38,7 @@ public class FavoriteEntityTest {
 
         assertEquals(Done.getInstance(), outcome.getReplies().get(0));
         Assert.assertEquals("user-1", ((FavoriteAdded) outcome.events().get(0)).getUserId());
-        Assert.assertEquals("test-chirp-id", ((FavoriteAdded) outcome.events().get(0)).getFavoriteId());
+        Assert.assertEquals("test-chirp-id", ((FavoriteAdded) outcome.events().get(0)).getChirpId());
         assertEquals(Collections.emptyList(), driver.getAllIssues());
     }
 
@@ -52,7 +52,7 @@ public class FavoriteEntityTest {
 
         assertEquals(Done.getInstance(), outcome.getReplies().get(0));
         Assert.assertEquals("user-1", ((FavoriteDeleted) outcome.events().get(0)).getUserId());
-        Assert.assertEquals("test-chirp-id", ((FavoriteDeleted) outcome.events().get(0)).getFavoriteId());
+        Assert.assertEquals("test-chirp-id", ((FavoriteDeleted) outcome.events().get(0)).getChirpId());
         assertEquals(Collections.emptyList(), driver.getAllIssues());
     }
 

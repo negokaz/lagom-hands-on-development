@@ -44,7 +44,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     public ServiceCall<FavoriteId, NotUsed> addFavorite(String userId) {
         return request -> {
             CompletionStage<Done> adding =
-                    favoriteEntityRef(userId).ask(AddFavorite.of(userId, request.getFavoriteId()));
+                    favoriteEntityRef(userId).ask(AddFavorite.of(userId, request.getChirpId()));
             return adding.thenApply(ack -> NotUsed.getInstance());
         };
     }
@@ -62,7 +62,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         return notUsed -> {
             CompletionStage<GetFavoritesReply> favorites =
                     favoriteEntityRef(userId).ask(GetFavorites.of());
-            return favorites.thenApply(rep -> rep.getFavoriteIds());
+            return favorites.thenApply(rep -> rep.getChirpIds());
         };
     }
 

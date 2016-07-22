@@ -26,7 +26,7 @@ public interface FavoriteCommand extends Jsonable {
         String getUserId();
 
         @Value.Parameter
-        String getFavoriteChirpId();
+        String getChirpId();
     }
 
     /**
@@ -41,7 +41,7 @@ public interface FavoriteCommand extends Jsonable {
         String getUserId();
 
         @Value.Parameter
-        String getFavoriteChirpId();
+        String getChirpId();
     }
 
     /**
@@ -63,7 +63,7 @@ public interface FavoriteCommand extends Jsonable {
     interface AbstractGetFavoritesReply extends Jsonable {
 
         @Value.Default
-        default POrderedSet<String> getFavoriteIds() {
+        default POrderedSet<String> getChirpIds() {
             return OrderedPSet.empty();
         }
     }

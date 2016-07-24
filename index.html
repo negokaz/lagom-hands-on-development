@@ -8,17 +8,24 @@
 </head>
 <body>
 <label for="enable-sync" class="subscribe-control remote-controller">
-  <input type="checkbox" id="enable-sync" class="subscribe-control" unchecked />
+  <input type="checkbox" id="enable-sync" class="subscribe-control" checked />
   <span>講演者と同期</span>
 </label>
 <textarea id="source">
 
 ## 準備
 
-* ブラウザでスタートページ(下記)にアクセス
-* 「ハンズオンを始める」に従って準備してください
+1. .height-1[![](resources/img/chrome.jpg)] Chrome を起動してください
+1. スタートページが表示されます
+1. 「ハンズオンを始める」に従って準備してください
 
 # .center[[bit.ly/start-lagom-hands-on](http://bit.ly/start-lagom-hands-on)]
+
+.footnote[
+.bigger[
+※ ページが表示されない場合は、URLを手入力してください
+]
+]
 
 ---
 class: center, middle
@@ -70,7 +77,7 @@ Scala や Akka、Play といった技術の検証やコンサルを おこなっ
 ざっくり言うと、「小さいサービスを組み合わせて 一つのアプリケーションを構築するスタイルのこと」です。
 1つのシステムを小さいサービスに分割して、それぞれを疎結合にすることによって、様々な利点を得ることができます。
 
-毎回マイクロサービスアーキテクチャって言うのは疲れるので、以降は MSA と略します。
+マイクロサービスアーキテクチャと言うのは長いので、以降は MSA と略します。
 
 では、その MSA の利点とはなんでしょうか？
 
@@ -433,6 +440,11 @@ Chirper は 6 つのサービスで構成されています。
 それぞれ、どのような責務をになうかというと、
 Favorite がお気に入り、Chirp がつぶやき、Activity Stream が画面に表示されるタイムライン、
 Friend がユーザーとそのフォロワー、Front-End が UI のレンダリングについて、責務を担うサービスです。
+
+モノリシックなシステムでは、これらは一つのプロセス上で仕事をします。
+MSAではサービスが責務ごとに分割され、それぞれが別のプロセスで仕事をします。
+
+なので、それぞれのサービスが別々のサーバーで動くのをイメージしてもらえると良いと思います。
 
 で、次に各サービスがどのように連携しているのか？を説明したいと思います。
 
